@@ -1,0 +1,725 @@
+# User Status v2.1.0 상태창 — 구조 정리 및 AI 프롬프트 가이드
+
+이 문서는 상태창 테마와 가져오기 JSON을 만드는 안내서입니다. 확장 설치·엔진 호환성은 `README.md`를 먼저 확인하세요.
+
+> **v1.7.2에서 올라오는 경우:** 저장 키가 그대로라 상태창 값·설정·스킨은 모두 유지됩니다. 다만 최신 상태창의 기본 표시 위치가 **채팅창 안(인라인)** 으로 바뀌었습니다. 예전처럼 화면에 띄우려면 고급 설정의 **상태창을 채팅창 안에 표시** 를 끄세요.
+
+> 배포 파일은 `user-status.json`입니다. 마리나라 2.4 이상에서 확장 가져오기로 불러옵니다. `.js`를 그대로 가져오면 상태창이 뜨지 않습니다.
+
+## 1. 전체 구조 개요
+
+이 플러그인의 CSS/HTML은 3개 레이어로 분리됩니다.
+
+| 레이어 | 입력 위치 | 적용 대상 |
+|--------|-----------|-----------|
+| 카드 CSS + HTML | 편집기 → "카드 CSS / 카드 템플릿" | 상태 값이 표시되는 내용 카드 |
+| 장면 CSS + HTML | 편집기 → "장면 CSS / 장면 템플릿" | 시간·장소·묘사 등 장면 띠 |
+| 윈도우 CSS | 편집기 → "윈도우 CSS" | 창 틀·탭·버튼·테두리 등 UI 껍데기 |
+
+> **핵심 주의:** 카드/장면 CSS는 Shadow DOM 격리 안에서 렌더됩니다. 윈도우 CSS가 카드 내용에 닿지 않고, 카드 CSS가 창 틀에 닿지 않습니다. 레이어를 섞으면 효과가 없습니다.
+
+> **표시·동기화 설정:** 고급 설정에서 상태창을 메시지 안에 넣거나 화면에 띄울 수 있습니다. 채팅 내부 모드는 `말풍선/첨부 → 상태창 → 스와이프·재생성 등 하단 아이콘 바` 순서이며, 과거 메시지는 기본 접힘 기록으로 남습니다. 인라인 최신 창 전체·장면·캐릭터의 기본 접힘과 제목 표시를 각각 선택할 수 있습니다. 과거 기록에도 수정·프롬프트 재생성·상태 생성·설정 버튼이 있습니다. 메시지를 AI에게 숨기면 해당 메시지의 상태창도 채팅 표시와 연속성 계산에서 빠지지만 저장 기록은 유지됩니다. 현재 채팅에 적용된 상태창의 ID가 metadata에 함께 저장되어, 같은 상태창을 가진 다른 기기에서 채팅을 열면 자동으로 연결됩니다.
+
+> **디자인 ≠ 동작:** 위 3개 레이어는 "상태창이 **어떻게 생겼는지**"(디자인)를 다룹니다. 이와 별개로, AI가 "**값을 어떻게 채우는지**"(동작)를 정하는 **연속성·작성 규칙(`instructions`)** 이 있습니다. 이건 CSS가 아니라 추출 지시문이며, 자세한 내용은 **6번 섹션**을 참고하세요.
+
+---
+
+## 2. 카드 CSS + HTML 템플릿
+
+### HTML 뼈대 (최소 템플릿)
+
+```html
+<div class="card">
+  <div class="nm">💗 {{이름}}</div>
+
+  <!-- 단순 텍스트 행 -->
+  <div class="row">
+    <span class="lab">기분</span>
+    <span class="val">{{기분}}</span>
+  </div>
+
+  <!-- 숫자 행 -->
+  <div class="row">
+    <span class="lab">호감도</span>
+    <span class="val">{{호감도}}</span>
+  </div>
+
+  <!-- 진행 바 행 (숫자 필드 아래 붙임) -->
+  <div class="row">
+    <span class="lab"></span>
+    <span class="bar">
+      <span class="fill" style="width:{{호감도}}%"></span>
+    </span>
+  </div>
+</div>
+```
+
+- `{{이름}}`, `{{기분}}` 등 — 이중 중괄호 안에 필드 key를 그대로 씁니다.
+- 진행 바는 `style="width:{{호감도}}%"` 로 숫자 값을 인라인 width에 연결합니다.
+- 채우는 칸을 `<span>`으로 쓰면 CSS에 `display:block`을 꼭 넣습니다. 빠지면 width가 먹지 않아 막대가 늘 비어 보입니다.
+
+### CSS 뼈대 (핑크 로맨스 기준 최소화)
+
+```css
+/* 카드 전체 박스 */
+.card {
+  font-family: system-ui, -apple-system, sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: #5b2b40;
+  background: linear-gradient(135deg, #ffe1ec, #ffd0e0);
+  border: 1px solid #ffb3cd;
+  box-shadow: 0 4px 14px rgba(255,120,160,.25);
+  overflow-wrap: break-word;
+  word-break: keep-all;
+}
+
+/* 이름/제목 줄 */
+.nm { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+
+/* 한 행 (레이블 + 값) */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  padding: 4px 0;
+  line-height: 1.45;
+}
+
+/* 레이블 (왼쪽) */
+.lab { opacity: .7; flex: none; }
+
+/* 값 (오른쪽) */
+.val { font-weight: 600; text-align: right; overflow-wrap: break-word; word-break: keep-all; }
+
+/* 진행 바 컨테이너 */
+.bar { height: 8px; border-radius: 6px; background: #ffffff80; overflow: hidden; margin-top: 2px; width: 120px; flex: none; }
+
+/* 진행 바 채움 */
+.fill { display: block; height: 100%; background: linear-gradient(90deg, #ff7eb3, #ff4d8d); }
+```
+
+---
+
+## 3. 장면 CSS + HTML 템플릿
+
+### HTML 템플릿
+
+```html
+<div class="scene">
+  <div class="head">
+    <span>🕒 {{시간}}</span>
+    <span>📍 {{장소}}</span>
+  </div>
+  <div class="sub">{{장면 묘사}}</div>
+  <div class="sub">🧍 {{자세/동작}}</div>
+</div>
+```
+
+### CSS
+
+```css
+.scene {
+  font-family: system-ui, -apple-system, sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid #ffb3cd;
+  background: linear-gradient(135deg, #fff5fa, #ffe9f2);
+  color: #6a2f49;
+  box-shadow: 0 2px 10px rgba(255,120,160,.15);
+}
+.head { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; font-weight: 700; }
+.sub  { margin-top: 6px; font-size: 11px; opacity: .86; line-height: 1.5; }
+```
+
+---
+
+## 4. 윈도우 CSS — 구조와 핵심 주의사항
+
+> **요약:** 플로팅 창(`#us-float`)만 꾸미면 설정창(`.us-box`)은 자동으로 같은 색을 따라갑니다(기본값). 색은 반드시 CSS 변수에 값을 할당하는 방식으로 씁니다.
+
+맞춤 윈도우 CSS 모드에서는 CSS가 지정하지 않은 확장 색도 고정 기본 팔레트를 사용합니다. 따라서 Marinara의 라이트/다크 모드를 바꿔도 설계한 상태창 색이 의도치 않게 바뀌지 않으며, `--us-float-*`와 `--us-box-*`에 명시한 값은 그대로 우선합니다.
+
+### ⚠️ "돌려서 써야 한다"는 게 무슨 뜻인가
+
+창 틀 내부는 CSS 변수(`--us-float-*`, `--us-box-*`)를 통해서만 색상을 소비합니다.  
+`#us-float { background: #fff; color: red; }` 처럼 직접 속성을 쓰면 대부분 무시됩니다.  
+반드시 **변수에 값을 할당하는 방식**으로 써야 합니다.
+
+```css
+/* ✅ 올바른 방법 — 변수를 통해 "돌려서" 적용 */
+#us-float, #us-prompt-bubble-window {
+  border-radius: 14px;               /* border-radius, box-shadow만 예외 — 직접 써도 됨 */
+  box-shadow: 0 6px 24px rgba(255,120,160,.25);
+
+  --us-float-bg:        #fff0f5;     /* 창 배경 (gradient 함수도 값으로 넣을 수 있음) */
+  --us-float-fg:        #3b0a1a;     /* 주 텍스트 색 */
+  --us-float-border:    #ffb3cd;     /* 테두리 색 */
+  --us-float-muted:     #9b7080;     /* 보조 텍스트 (힌트·레이블) */
+  --us-float-primary:   #e91e8c;     /* 강조색 (활성 탭, 토글 ON) */
+  --us-float-primary-fg:#fff;        /* 강조색 위의 글자 색 */
+  --us-float-secondary: #fce4ec;     /* 버튼·장면버튼 배경 */
+  --us-float-accent:    #f8bbd0;     /* 호버 배경 */
+}
+
+/* ❌ 잘못된 방법 — 변수를 거치지 않아 무시됨 */
+#us-float { background: #fff0f5; color: #3b0a1a; }
+```
+
+### font-family는 변수가 아님 → 별도 직접 지정
+
+```css
+/* font-family는 변수로 제어 안 되므로 요소를 직접 타겟 */
+#us-float .us-f-title,
+#us-float .us-tab,
+#us-float .us-scene-button {
+  font-family: Georgia, serif;   /* 원하는 폰트로 교체 */
+}
+```
+
+### 설정창(`.us-box`) — 기본은 자동 동기화
+
+> **기본 동작(권장):** 고급 설정의 **"설정창 색을 플로팅 창에 자동으로 맞추기"** 가 켜져 있으면(기본값),
+> `#us-float` 색만 지정해도 설정창·편집기 창(`.us-box`)이 같은 색을 **자동으로 따라갑니다.**
+> 따라서 대부분의 경우 아래 `.us-box` 블록을 **굳이 쓸 필요가 없습니다.** `#us-float` 한 곳만 꾸미면 됩니다.
+
+매핑은 의미가 대응되는 변수끼리 자동으로 이뤄집니다:
+
+| `#us-float` 변수 | 자동으로 채워지는 `.us-box` 변수 |
+|---|---|
+| `--us-float-bg` | `--us-box-bg` |
+| `--us-float-fg` | `--us-box-fg` |
+| `--us-float-border` | `--us-box-border`, `--us-box-switch-off` |
+| `--us-float-muted` | `--us-box-muted` |
+| `--us-float-secondary` | `--us-box-secondary`, `--us-box-input-bg` |
+| `--us-float-accent` | `--us-box-accent` |
+| `--us-float-primary` | `--us-box-primary`, `--us-box-switch-on` |
+| `--us-float-primary-fg` | `--us-box-primary-fg`, `--us-box-switch-thumb` |
+
+**설정창을 플로팅 창과 다르게** 꾸미고 싶을 때만 `.us-box` 블록을 직접 작성합니다. 이때는 고급 설정에서
+**"설정창 색을 플로팅 창에 자동으로 맞추기"를 끄세요.** 끄면 아래처럼 직접 쓴 `.us-box` 값이 우선하고,
+쓰지 않은 변수만 `#us-float` 색에서 채워집니다.
+
+```css
+/* 자동 맞추기를 끈 경우에만 필요 — 설정창을 플로팅과 다르게 디자인할 때 */
+.us-box {
+  --us-box-bg:           #fff8fb;
+  --us-box-fg:           #3b0a1a;
+  --us-box-border:       #f9aec7;
+  --us-box-muted:        #9b7080;
+  --us-box-input-bg:     #fff8fb;
+  --us-box-secondary:    #fce4ec;
+  --us-box-accent:       #f8bbd0;
+  --us-box-primary:      #e91e8c;
+  --us-box-primary-fg:   #fff;
+  --us-box-switch-off:   #f9aec7;   /* 토글 OFF 트랙 */
+  --us-box-switch-on:    #e91e8c;   /* 토글 ON 트랙 */
+  --us-box-switch-thumb: #fff;      /* 토글 손잡이 */
+}
+```
+
+> **참고:** "설정창·편집기 창도 윈도우 CSS 따라가기" 자체를 끄면, 자동 맞추기와 무관하게 설정창은 항상 마리나라 기본 테마로 표시됩니다.
+
+---
+
+## 5. AI에게 만들어 달라고 할 때 프롬프트 작성법
+
+```
+다음 조건에 맞는 User Status 상태창 테마를 만들어줘.
+
+## 테마 컨셉
+[원하는 테마 — 예: 사이버펑크 / 수묵화 / 귀엽고 파스텔한 느낌 등]
+
+## 출력 형식
+아래 5개 항목을 각각 코드블록으로 출력해줘:
+1. 카드 CSS (클래스 이름은 짧게, 충돌 방지 위해 고유한 접두사 사용)
+2. 카드 HTML 템플릿 (변수: {{이름}}, {{기분}}, {{호감도}}, {{관계}}, {{상태}})
+3. 장면 CSS
+4. 장면 HTML 템플릿 (변수: {{시간}}, {{장소}}, {{장면 묘사}}, {{자세/동작}})
+5. 윈도우 CSS
+
+## 윈도우 CSS 필수 규칙
+- 창틀 색상은 반드시 CSS 변수(--us-float-*, --us-box-*)에 값을 할당하는 방식으로만 작성할 것
+- 직접 background:, color: 속성을 #us-float에 쓰지 말 것 (변수를 거쳐야 실제로 적용됨)
+- border-radius와 box-shadow는 예외적으로 #us-float에 직접 써도 됨
+- font-family는 변수 대신 #us-float .us-f-title, #us-float .us-tab, #us-float .us-scene-button 을 직접 지정할 것
+- #us-float 블록은 반드시 작성할 것. 설정창(.us-box)은 기본적으로 #us-float 색을 자동으로 따라가므로 생략 가능 — 설정창을 플로팅과 '다른' 색으로 만들 때만 .us-box 블록을 추가할 것
+- 배경에 그라디언트를 쓰고 싶다면 --us-float-bg: radial-gradient(...) 처럼 변수 값 안에 함수를 통째로 넣어도 됨
+
+## 카드 CSS 필수 규칙
+- Shadow DOM 안에서 렌더되므로 width:100%, box-sizing:border-box, overflow-wrap:break-word, word-break:keep-all 필수
+- 외부 폰트(@import, url()) 사용 불가 — system-ui, 'Courier New', Georgia 등 시스템 폰트만 사용
+- 진행 바를 넣을 경우 style="width:{{호감도}}%" 인라인 방식으로 연결
+- 진행 바의 채우는 칸이 span이면 display:block 을 반드시 지정 (빠지면 width가 무시됨)
+
+## 금지 사항
+- @import 구문 사용 금지
+- url() 로 외부 이미지 로드 금지
+- !important 남발 금지
+- 클래스 이름 충돌 방지를 위해 .card, .row 같은 너무 일반적인 이름보다 테마 고유 접두사 권장
+```
+
+---
+
+## 6. 연속성·작성 규칙 (`instructions`) — AI가 값을 채우는 방식
+
+2~5번이 "상태창이 **어떻게 보이는지**"(디자인)였다면, 이 섹션은 "AI가 **값을 어떻게 채우는지**"(동작)를 다룹니다. 이 규칙은 CSS가 아니라 **추출 지시문(자연어)** 이며, 상태창 데이터의 `instructions` 필드에 저장됩니다.
+
+### 6-1. 어디에 넣나
+
+| 방법 | 위치 | 설명 |
+|------|------|------|
+| 편집기 직접 입력 | 상태창 편집기 → **"연속성·작성 규칙"** 칸 (placeholder: *예: Keep affinity within ±10…*) | 이미 만든 상태창의 규칙만 수정 |
+| 편집기 JSON 탭 | 상태창 편집기 상단 **`JSON`** 탭 | 이 상태창 전체를 JSON으로 보고 통째로 고침 (`instructions` 포함) |
+| JSON 가져오기 | 설정 → 상태창 **가져오기**로 `.json` 불러오기 (여러 파일 동시 선택 가능) | `instructions`가 상태창 데이터에 포함돼 자동으로 같이 들어옴 |
+
+> **중요:** `instructions`는 **개별 상태창에 귀속**됩니다. 상태창을 내보내기/불러오기 하면 이 규칙도 함께 따라옵니다. (앱 전역의 "공용 기본 규칙"과는 별개입니다.)
+
+> **JSON 파일의 정확한 키 구조는 8번 섹션**을 참고하세요 — 실제 내보내기(export)한 파일로 확인된 스키마입니다.
+
+### 6-2. 무엇을 제어하나 — 공통 연속성 규칙
+
+대부분의 상태창에 공통으로 권장되는 핵심 동작입니다(농장 일기장 예시에서 발췌·요약):
+
+- **이전 상태에서 이어가기:** 새 값을 지어내지 말고 직전 상태에서 이어서, 장면이 실제로 바꾼 것만 갱신. 언급되지 않은 필드는 이전 값 유지.
+- **점진적 변화:** 숫자·관계는 한 번에 튀지 않고 서서히 변하게.
+- **빈 필드 추론:** 비어 보이면 캐릭터 카드·이전 맥락에서 합리적으로 추론. 정말 알 수 없을 때만 공란.
+- **등장인물 누락 금지:** 장면에 있는 모든 `{{char}}`·`{{user}}`는 항상 출력. 여러 캐릭터가 있어도, 매 메시지에 이름이 반복되지 않아도 절대 빠뜨리지 않음.
+- **이전에 등장했던 대상 유지:** 직전 상태에 있던 대상은 계속 출력(서사상 영구 퇴장·사망이 아닌 한). 단순히 자리를 비웠다면, 어디 있는지까지 추론해 표시.
+- **기준치=상한:** 각 스탯의 확립된 기준치를 최대로 보고, 피해·치유·시간 경과 같은 이벤트에 의해서만 증감.
+- **장면 일관성:** 시간/장소/자세는 직전 장면과 일관되게, 서사가 실제로 바꾼 것만 변경.
+- **정체 방지:** 직전 상태와 글자까지 동일한 출력 금지. 상황이 안정적이어도 가장 동적인 필드(기분·행동·자세)는 현재 순간을 반영.
+
+### 6-3. 필드별 엄격한 출력 포맷 (선택)
+
+특정 필드가 **정확한 형식**으로 나와야 하면, `instructions`에 그 포맷을 명시할 수 있습니다. 농장 일기장의 "농장 현황 탭"이 그 예입니다 — 이런 식으로 필드마다 규칙을 적습니다:
+
+```
+=== Farm Status tab — strict output format ===
+- Day (일차): 숫자만 출력. 경고: 농장에 벌레(worm) 종이 있으면 ⚠️, 없으면 공란.
+- Total Wealth (총재산): 쉼표 포함 숫자만 ("G"는 템플릿이 붙임). 예: 150,000
+- Byproduct Inventory (부산물): 한 줄에 하나 "• 이름: 수량 (개당 단가G)". 없으면 "None".
+- Owned Beastfolk (수인목록): "• 이름(종족/세대/성별/상태/Charm N Prod N Fert N)".
+    - 상태 라벨은 정확히: Infant / Toddler / Adolescent / Adult / Pregnant D[일] / Cooldown 중 하나.
+    - 성체 이전(Infant·Toddler·Adolescent)은 능력치를 "??"로.
+    - 근친: 이름 뒤 [Inbred1]/[Inbred2]. 벌레종: 이름 뒤 [Worm].
+- Facility (시설): "Lv.N (current/max) | Upgrade: costG → Lv.N", 최대면 "MAX".
+```
+
+> **팁:** 접이식(`<details>`) 섹션을 써도 값은 동일하게 렌더되므로, 포맷 규칙은 펼침/접힘과 무관하게 그대로 적용됩니다.
+
+### 6-4. 멀티 NPC(캐릭터) 카드 처리
+
+캐릭터 탭이 여러 개일 때, 각 탭의 값이 **엉뚱한 NPC와 섞이지 않도록** 하는 규칙입니다:
+
+```
+=== Multi-NPC character card handling ===
+각 상태 탭은 그 탭의 '이름' 필드로 식별됩니다. 탭을 채울 때는
+{{char}} 안에서 그 탭의 '이름'과 일치하는 NPC의 설명 구간을 찾아,
+오직 그 NPC의 설명에서만 값을 가져옵니다. 서로 다른 NPC의 정보를 섞지 마세요.
+같은 항목(기분·호감도 등)이 NPC마다 다르게 정의돼 있으면,
+항상 '이름'에 해당하는 NPC의 값을 사용합니다.
+```
+
+### 6-5. AI에게 `instructions`를 써달라고 할 때 (프롬프트)
+
+5번이 "디자인을 만들어줘"였다면, 이건 "추출 규칙을 써줘"입니다:
+
+```
+이 User Status 상태창의 '연속성·작성 규칙(instructions)'을 영어로 작성해줘.
+규칙은 AI가 매 턴 상태 값을 채울 때 따르는 자연어 지시문이야.
+
+## 상태창 개요
+- 캐릭터 필드: [예: 기분, 호감도(0~100), 관계, 상태]
+- 장면 필드: [예: 시간, 장소, 장면 묘사, 자세/동작, 그리고 특수 필드들]
+
+## 반드시 포함할 공통 규칙
+- 이전 상태에서 이어가고, 장면이 바꾼 것만 갱신 / 언급 없는 필드는 유지
+- 숫자·관계는 점진적으로 변화 (한 번에 튀지 않기)
+- 장면의 모든 {{char}}·{{user}}는 항상 출력, 절대 누락 금지
+- 직전 상태와 글자까지 동일한 출력 금지 (가장 동적인 필드는 현재를 반영)
+
+## 필드별 엄격한 포맷 (있으면)
+[정확한 형식이 필요한 필드와 그 규칙을 나열 — 예: 총재산은 쉼표 숫자만, 목록은 "• 이름: 값" 한 줄씩 등]
+
+## 멀티 NPC (탭이 여러 개면)
+- 각 탭의 '이름'에 해당하는 NPC 설명에서만 값을 가져오고, NPC 간 정보 혼동 금지
+```
+
+> **요약:** 디자인(2~5번)은 보이는 모습을, `instructions`(6번)는 채워지는 값을 정합니다. 둘은 독립적이라 한쪽만 바꿔도 다른 쪽에 영향이 없습니다.
+
+---
+
+## 7. 고급 패턴 (실전에서 뽑아낸 재사용 기법)
+
+2~6번이 기본 뼈대였다면, 여기는 실제로 복잡한 상태창(폐병원 예시)을 만들며 나온 **범용 패턴**입니다. JS 없이 CSS만으로 동작합니다.
+
+### 7-1. 탭 UI (라디오 버튼 트릭)
+
+한 상태창 안에 SCENE / INVENTORY / CLUE처럼 여러 패널을 넣고 버튼으로 전환하고 싶을 때 씁니다. 숨은 `radio` 인풋 + `label`로 클릭을 받고, `:checked ~` 형제 선택자로 해당 패널만 보여줍니다.
+
+```html
+<div class="hx">
+  <input type="radio" name="hxtab" id="hxtab-scene" class="hxtab-radio" checked>
+  <input type="radio" name="hxtab" id="hxtab-inv" class="hxtab-radio">
+  <input type="radio" name="hxtab" id="hxtab-clue" class="hxtab-radio">
+
+  <div class="hxtabbar">
+    <label class="hxtabbtn" for="hxtab-scene">SCENE</label>
+    <label class="hxtabbtn" for="hxtab-inv">INVENTORY</label>
+    <label class="hxtabbtn" for="hxtab-clue">CLUE</label>
+  </div>
+
+  <div class="hxpanel hxpanel-scene">...</div>
+  <div class="hxpanel hxpanel-inv">...</div>
+  <div class="hxpanel hxpanel-clue">...</div>
+</div>
+```
+
+```css
+.hxtab-radio{display:none}
+.hxpanel{display:none}
+#hxtab-scene:checked ~ .hxpanel-scene{display:block}
+#hxtab-inv:checked ~ .hxpanel-inv{display:block}
+#hxtab-clue:checked ~ .hxpanel-clue{display:block}
+#hxtab-scene:checked ~ .hxtabbar .hxtabbtn[for="hxtab-scene"],
+#hxtab-inv:checked ~ .hxtabbar .hxtabbtn[for="hxtab-inv"],
+#hxtab-clue:checked ~ .hxtabbar .hxtabbtn[for="hxtab-clue"]{
+  background:#3a0505;border-color:#D71C1C;color:#FF4D4D;
+}
+```
+
+- 라디오는 `name`이 같아야 그룹으로 묶여 하나만 선택됩니다.
+- 탭이 많아지면 `radio` 개수와 `:checked ~` 규칙을 그만큼 늘리면 됩니다.
+- 첫 탭에 `checked` 속성을 넣어야 기본 진입 시 SCENE이 보입니다.
+
+### 7-2. 접이식 아이템 리스트 + NEW 뱃지
+
+소지품·단서처럼 "목록이 늘어나고, 클릭하면 설명이 펼쳐지고, 새로 얻은 것만 반짝이는" 패턴입니다. `<details>/<summary>`는 JS 없이 클릭 펼침을 제공합니다.
+
+```html
+<details class="hx-item {{소지품1신규}}">
+  <summary><span class="hx-item-name">{{소지품1}}</span></summary>
+  <div class="hx-desc">{{소지품1설명}}</div>
+</details>
+```
+
+```css
+.hx-item summary{list-style:none;cursor:pointer}
+.hx-item summary::-webkit-details-marker{display:none}
+.hx-item summary::marker{content:""}
+.hx-item[open] summary{background:#3a0f0f;border-color:#FF4D4D}
+
+/* 빈 항목은 자동으로 숨김 (7-4 참고) */
+.hx-item:has(.hx-item-name:empty){display:none}
+
+/* 신규 획득 표시 */
+.hx-item.new summary{box-shadow:0 0 8px rgba(255,215,0,.45);animation:hxNewPulse 1.6s ease-in-out infinite}
+.hx-item.new summary::after{content:"NEW";float:right;font-size:9px;color:#FFD700}
+@keyframes hxNewPulse{0%,100%{box-shadow:0 0 4px rgba(255,215,0,.3)}50%{box-shadow:0 0 12px rgba(255,215,0,.65)}}
+/* 한 번 펼쳐보면(열려있는 동안) 반짝임 소거 — instructions에서 다음 턴에 '신규' 필드를 비우게 하는 것과 이중 안전장치 */
+.hx-item.new[open] summary{animation:none;box-shadow:none}
+.hx-item.new[open] summary::after{content:""}
+```
+
+- `{{소지품1신규}}` 같은 "이번 턴에만 new" 필드는 `instructions`에서 "획득한 바로 그 턴에만 값을 채우고 다음 턴부터 비운다"고 명시해야 합니다.
+- 항목 수가 6~10개처럼 많아지면 7-3의 스크롤 래퍼로 감싸는 걸 권장합니다.
+
+### 7-3. 스크롤바 테마 — ⚠️ 변수 시스템의 예외
+
+> **중요:** 4번(윈도우 CSS)에서 "색은 반드시 CSS 변수로"라고 했지만, **스크롤바만은 예외**입니다. 스크롤바는 `--us-float-*` 변수를 타지 않으므로 `scrollbar-color`, `::-webkit-scrollbar-*` 를 **직접** 써야 합니다. 그리고 스크롤이 일어나는 위치가 두 군데로 나뉘므로 **양쪽 다** 잡아야 합니다.
+
+**① 카드/장면 내부 스크롤 (Shadow DOM 안, 예: 소지품 목록)** — 카드 CSS 또는 장면 CSS에 작성:
+
+```css
+.hx-scroll{
+  max-height:230px; overflow-y:auto; padding-right:4px;
+  scrollbar-width:thin;                     /* Firefox */
+  scrollbar-color:#a52222 #0a0000;          /* Firefox: thumb track */
+}
+.hx-scroll::-webkit-scrollbar{ width:7px }                          /* Chrome/Edge/Safari */
+.hx-scroll::-webkit-scrollbar-track{ background:#0a0000; border-radius:3px }
+.hx-scroll::-webkit-scrollbar-thumb{ background:#a52222; border-radius:3px }
+.hx-scroll::-webkit-scrollbar-thumb:hover{ background:#d13a3a }
+```
+
+**② 창 틀 자체 스크롤 (상태창 전체가 길어질 때, `#us-float` 레벨)** — 윈도우 CSS에 작성:
+
+```css
+#us-float, #us-prompt-bubble-window, .us-box {
+  scrollbar-width: thin;
+  scrollbar-color: #7d1818 #1a0000;
+}
+#us-float *::-webkit-scrollbar, .us-box *::-webkit-scrollbar { width: 8px; height: 8px; }
+#us-float *::-webkit-scrollbar-track, .us-box *::-webkit-scrollbar-track { background: #1a0000; border-radius: 4px; }
+#us-float *::-webkit-scrollbar-thumb, .us-box *::-webkit-scrollbar-thumb { background: #7d1818; border-radius: 4px; }
+#us-float *::-webkit-scrollbar-thumb:hover, .us-box *::-webkit-scrollbar-thumb:hover { background: #a52222; }
+```
+
+- 둘 중 하나만 잡으면 "일부 스크롤바만 안 바뀐다"는 증상이 생깁니다 — 어디서 스크롤이 발생하는지(카드 내부 vs 창 틀) 먼저 구분하세요.
+- 그래도 안 바뀌면 다른 스타일에 밀리고 있을 수 있으니 각 속성에 `!important`를 붙여 우선순위를 강제합니다.
+- **플랫폼 한계:** 일부 모바일 웹뷰(특히 iOS)는 커스텀 스크롤바 스타일링 자체를 지원하지 않습니다. 데스크톱 브라우저에서 먼저 확인해 CSS 문제인지 플랫폼 제약인지 구분하세요.
+
+### 7-4. 빈 필드 자동 숨김 (`:has()` 트릭)
+
+가이드 2번의 `.chip:empty{display:none}`은 "그 요소 자신"이 비었을 때만 숨깁니다. 하지만 "레이블+값이 한 세트인 행 전체"를 숨기고 싶다면(예: 값이 없으면 레이블도 같이 사라져야 할 때) 자식 기준으로 판단하는 `:has()`가 필요합니다.
+
+```css
+/* 값(.rv)이 비면 레이블까지 포함해 행 전체를 숨김 */
+.rose:has(.rv:empty){display:none}
+
+/* 이름이 빈 항목은 통째로 숨김 (리스트에서 사용) */
+.hx-item:has(.hx-item-name:empty){display:none}
+
+/* 반대로, 리스트가 통째로 비었을 때만 "없음" 안내문 표시 */
+.hxpanel-inv:has(.hx-item-name:not(:empty)) .hx-empty-inv{display:none}
+```
+
+- `:has()`는 비교적 최신 CSS 기능이라 구버전 브라우저에선 안 먹을 수 있지만, Chrome/Edge/Safari 최신 버전에서는 안정적으로 동작합니다.
+- 필드를 빈 값으로 만드는 주체는 `instructions`(6번)이고, 그걸 화면에서 숨기는 주체는 이 CSS 트릭입니다 — 둘이 짝을 이뤄야 "값 없으면 자동으로 사라지는" 동작이 완성됩니다.
+
+---
+
+## 8. 실전 확인된 JSON 내보내기/가져오기 스키마
+
+2~7번은 편집기 칸에 **한 레이어씩 복붙**하는 방법이었습니다. 하지만 상태창 전체(카드+장면+윈도우+필드+instructions)를 **`.json` 파일 하나로 통째로 가져오기/내보내기**할 수도 있습니다. 아래는 실제로 내보내기한 상태창 파일로 확인한 정확한 키 구조입니다.
+
+### 8-1. 최상위 구조
+
+```json
+{
+  "type": "marinara-user-status-item",
+  "version": 1,
+  "exportedAt": "2026-07-25T08:15:17.466Z",
+  "status": { ... 8-2 참고 ... }
+}
+```
+
+### 8-2. `status` 객체 안의 키
+
+| 키 | 타입 | 설명 |
+|---|---|---|
+| `id` | string | 상태창 고유 ID (예: `us-mrops2mvkvsoy`) |
+| `name` | string | 상태창 이름 (탭/목록에 표시됨) |
+| `description` | string | 선택. 짧은 설명 — 상태창 목록에서 이름을 누르면 펼쳐 보임. 프롬프트·화면 렌더에는 쓰이지 않음 |
+| `fields` | `{key, instruction}[]` | **캐릭터 카드**에 쓰이는 필드 목록. `template`(카드 HTML)에서 `{{key}}`로 참조 |
+| `sceneFields` | `{key, instruction}[]` | **장면**에 쓰이는 필드 목록. `sceneTemplate`(장면 HTML)에서 `{{key}}`로 참조 |
+| `template` | string (HTML) | 카드 HTML — 2번 섹션 |
+| `css` | string (CSS) | 카드 CSS — 2번 섹션 |
+| `sceneTemplate` | string (HTML) | 장면 HTML — 3번 섹션 (탭 UI는 7-1 패턴 사용) |
+| `sceneCss` | string (CSS) | 장면 CSS — 3번 섹션 |
+| `windowCss` | string (CSS) | 윈도우 CSS — 4번 섹션 |
+| `windowCssMode` | string | `"custom"`이면 위 `windowCss`를 사용, 그 외 기본값이면 마리나라 기본 테마 |
+| `instructions` | string | 연속성·작성 규칙 — 6번 섹션 |
+| `tabTemplate` | string | 캐릭터 탭 버튼에 표시될 라벨 템플릿. 보통 `"{{이름}}"` |
+| `tabCss` | string | 탭 버튼 전용 CSS (보통 빈 문자열, 윈도우 CSS의 `.us-tab`으로 충분) |
+| `sceneButtonTemplate` | string | 장면 토글 버튼 라벨. 보통 `"장면"` |
+| `sceneButtonCss` | string | 장면 버튼 전용 CSS (보통 빈 문자열) |
+| `sceneDefaultCollapsed` | boolean | 장면 띠를 기본 접힘 상태로 시작할지 |
+| `charCollapseMode` | string | 캐릭터 카드 접힘 동작 모드. 보통 `"global"` |
+| `charFieldsBackup` | array | 내부용 백업 슬롯 (보통 빈 배열 `[]`로 둠) |
+| `folds` | `{name, at}[]` | **접기 그룹** 마커. `at` 은 그룹이 시작되는 `fields` 인덱스 (9-1 참고) |
+| `sceneFolds` | `{name, at}[]` | 장면 필드용 접기 그룹 마커. `at` 은 `sceneFields` 인덱스 |
+| `valueLineBreaks` | string | 값 안 줄바꿈 처리: `"off"`(기본) / `"br"` / `"div"` (9-3 참고) |
+| `valueHtml` | boolean | 값 안의 간단한 서식 태그 허용 (기본 `false`, 9-3 참고) |
+
+### 8-3. `fields` / `sceneFields` 배열 항목
+
+```json
+{ "key": "호감도", "instruction": "0~100 숫자만. 이벤트에 비례해 점진적으로 변화." }
+```
+
+- `key`는 `template`/`sceneTemplate` 안에서 `{{key}}`로 그대로 참조됩니다.
+- `instruction`은 그 필드 하나에 대한 짧은 채움 규칙입니다. **필드별 규칙**은 여기, **여러 필드를 아우르는 공통 규칙**(이전 상태 유지, 점진적 변화 등)은 최상위 `instructions`(8-2)에 몰아서 적는 두 층 구조입니다.
+- 필드 키 네이밍 관례: 슬롯이 여러 개 반복될 때는 언더스코어 없이 **번호+단어를 붙여서** 씁니다. 예: `퀘스트1의뢰인`, `퀘스트1완료`, `아이템1신규`, `아이템1설명`. (`퀘스트1_의뢰인`처럼 언더스코어를 넣어도 동작은 하지만, 실제 내보내기 파일들은 붙여쓰는 쪽이 관례입니다.)
+
+### 8-4. 최소 스켈레톤 예시
+
+```json
+{
+  "type": "marinara-user-status-item",
+  "version": 1,
+  "exportedAt": "2026-07-29T00:00:00.000Z",
+  "status": {
+    "id": "us-예시아이디",
+    "name": "예시 상태창",
+    "description": "로맨스용 기본 카드. 호감도 막대 포함",
+    "fields": [
+      { "key": "이름", "instruction": "NPC 이름" },
+      { "key": "호감도", "instruction": "0~100 숫자만" }
+    ],
+    "sceneFields": [
+      { "key": "장소", "instruction": "현재 장면 위치" }
+    ],
+    "template": "<div class=\"card\">...{{이름}}...{{호감도}}...</div>",
+    "css": ".card{...}",
+    "sceneTemplate": "<div class=\"scene\">...{{장소}}...</div>",
+    "sceneCss": ".scene{...}",
+    "tabTemplate": "{{이름}}",
+    "tabCss": "",
+    "sceneButtonTemplate": "장면",
+    "sceneButtonCss": "",
+    "sceneDefaultCollapsed": false,
+    "charCollapseMode": "global",
+    "charFieldsBackup": [],
+    "folds": [{ "name": "내면", "at": 1 }],
+    "valueLineBreaks": "off",
+    "valueHtml": false,
+    "instructions": "이전 상태에서 이어갈 것. 언급 없는 필드는 유지.",
+    "windowCss": "#us-float{ --us-float-bg:#fff; ... }",
+    "windowCssMode": "custom"
+  }
+}
+```
+
+### 8-5. AI에게 통짜 JSON으로 만들어 달라고 할 때 (프롬프트)
+
+5번 프롬프트가 "5개 코드블록으로 나눠서 달라"였다면, 이건 "그 5개를 위 스키마에 맞는 JSON 파일 하나로 합쳐서 달라"는 버전입니다.
+
+```
+다음 조건에 맞는 User Status 상태창을 8-1~8-4에서 정의한 JSON 스키마 그대로 만들어줘
+(최상위 type/version/status.* 키 이름은 절대 바꾸지 말 것).
+
+## 테마 컨셉
+[원하는 테마]
+
+## 카드(fields)에 넣을 필드
+[예: 이름, 호감도, 기분, 상태]
+
+## 장면(sceneFields)에 넣을 필드
+[예: 장소, 날씨, 시간, 장면묘사]
+
+## 윈도우 CSS 필수 규칙 / 카드 CSS 필수 규칙 / 금지 사항
+(5번 섹션과 동일)
+
+## instructions
+필드별 세부 규칙은 각 field의 "instruction"에, 여러 필드를 아우르는 공통 규칙(이전 상태 유지·점진적 변화·다중 NPC 처리 등)은 status.instructions에 넣어줘.
+```
+
+---
+
+## 9. v2.0.0에서 추가된 편집 기능
+
+### 9-1. 접기 (상태값 그룹)
+
+상태값이 많아 편집·수정 화면이 길어질 때, 상태값 사이에 **＋ 접기**로 구분선을 넣어 그 아래 값들을 하나로 묶어 접을 수 있습니다.
+
+- 상태창 수정 → 캐릭터 필드 또는 장면(공유) 필드 → **＋ 접기** → 그룹 이름 입력 (예: `신체 상태`)
+- 접기 마커부터 **다음 마커 직전(또는 목록 끝)까지**의 상태값이 한 그룹입니다.
+- 마커도 상태값과 함께 드래그로 옮길 수 있고, 옮기면 묶이는 범위도 따라 바뀝니다.
+- 첫 마커보다 위에 있는 상태값은 그룹에 속하지 않고 항상 표시됩니다.
+- 이름을 비워 두면 저장할 때 그 마커는 사라집니다.
+
+| 화면 | 동작 |
+|---|---|
+| 상태창 수정(스킨) | 마커의 ▸ 버튼으로 접기/펼치기. **기본 접힘** |
+| 상태창의 `값 수정` | 캐릭터 영역 안에 그룹 박스로 표시. **기본 접힘**, 옆에 값 개수 표시 |
+| 기록 탭·과거 기록의 `수정` | 대상 카드 안에 그룹 박스로 표시. **기본 접힘**, 옆에 값 개수 표시 |
+
+접기는 **편집 화면 전용 표시**입니다. 상태창 출력, AI에게 보내는 지시문, 저장되는 값에는 전혀 영향을 주지 않고, 접힌 그룹 안의 값도 저장 시 정상적으로 함께 저장됩니다. JSON에서는 `folds: [{ "name": "그룹 이름", "at": 시작 인덱스 }]` 로 담기며 `at` 은 `fields` 배열 기준입니다. 장면 필드의 마커는 같은 구조의 `sceneFolds`(기준은 `sceneFields`)에 담깁니다.
+
+### 9-2. 상태창 ID 편집
+
+편집 화면의 이름 아래에서 ID를 직접 바꿀 수 있습니다. ID는 채팅별 적용 설정과 JSON 내보내기에서 이 상태창을 가리키는 고유 값입니다.
+
+- 공백과 따옴표는 쓸 수 없고, 다른 상태창과 겹칠 수 없습니다.
+- 바꾸면 이 상태창을 쓰던 채팅 설정이 새 ID로 함께 옮겨집니다. 과거 기록은 스킨을 못 찾으면 그 채팅에 적용된 스킨으로 표시되므로 화면이 깨지지 않습니다.
+
+### 9-3. 값 표시 방식 (줄바꿈 · 서식 태그)
+
+AI가 채운 **값**을 그릴 때만 적용되는 스킨별 옵션입니다. 템플릿(HTML)에는 영향이 없고, 캐릭터 값과 장면 값에 함께 적용됩니다. 둘 다 기본값이 "예전과 동일"이라 기존 스킨의 화면은 바뀌지 않습니다.
+
+**값 안의 줄바꿈** (`valueLineBreaks`)
+
+| 값 | 동작 |
+|---|---|
+| `"off"` (기본) | 줄바꿈 무시 — 한 줄로 이어 붙여 표시 |
+| `"br"` | 줄바꿈마다 `<br>` |
+| `"div"` | 줄마다 `<div class="us-vline">…</div>` 로 감쌈 (한 줄이면 감싸지 않음) |
+
+목록형 값("• 항목" 여러 줄 등)에 씁니다. `"div"` 를 고르면 카드 CSS에서 줄을 직접 꾸밀 수 있습니다:
+
+```css
+.us-vline { padding: 2px 0; }
+.us-vline + .us-vline { border-top: 1px dashed #ffb3cd66; }
+```
+
+**값 안의 서식 태그 허용** (`valueHtml`)
+
+켜면 값에 들어온 아래 태그만 실제 서식으로 렌더됩니다. 그 외 태그는 예전처럼 글자로만 보입니다.
+
+```
+i em b strong small u s del ins code mark sub sup span br wbr
+```
+
+- 허용 속성은 `class` 뿐입니다. `on…` 같은 이벤트 속성, `style`, `script`·`img`·`iframe` 등은 모두 글자로 남습니다.
+- 따옴표는 어떤 경우에도 이스케이프된 채 유지되므로, `style="width:{{호감도}}%"` 처럼 **속성 안에 값을 넣는 자리**가 깨지지 않습니다.
+- 값에 태그를 넣으려면 `instructions` 에도 명시하세요. 예: `Wrap whispered lines in <i>…</i>. Do not use any other HTML tags.`
+- 진행 바처럼 값을 숫자로만 써야 하는 필드에는 태그를 쓰지 않도록 필드 `instruction` 에 못박는 편이 안전합니다.
+
+### 9-4. 기록(값) 수정 화면
+
+- 값 칸은 여러 줄 입력칸이라 **줄바꿈과 태그가 저장된 그대로 보이고, 고친 그대로만 저장**됩니다. 상태창의 `값 수정`과 기록 탭의 `수정` 양쪽 모두 해당합니다. (예전에는 한 줄 입력칸이라 열었다 저장만 해도 줄바꿈이 사라졌습니다.)
+- 맨 아래 **`원본 JSON으로 수정`** 을 펼치면 그 기록의 `{ scene, subjects }` 를 직접 고칠 수 있습니다. 이 칸을 건드리면 위 입력칸 대신 JSON이 저장되고, 형식이 잘못되면 저장이 중단됩니다. 대상 추가·삭제나 키 이름 변경처럼 칸으로 못 하는 수정에 씁니다.
+
+### 9-5. 상태창 편집기 JSON 탭
+
+편집 화면 맨 위의 **`칸 입력` / `JSON`** 탭으로 같은 상태창을 두 방식으로 편집합니다. JSON 탭 내용은 8-2의 `status` 객체와 같은 구조이고, `{ "status": { … } }` 로 감싼 내보내기 파일 형태를 붙여 넣어도 인식합니다. 탭을 옮기거나 저장할 때 양쪽이 자동으로 맞춰지며, JSON 형식이 잘못되면 탭 이동과 저장이 막힙니다.
+
+> 파일로 가져오기/내보내기는 여전히 상태창 목록의 **추출** / **상태창 가져오기**(여러 파일 동시 선택 가능)에서 합니다.
+
+### 9-6. 조건 블록 — 값이 없으면 통째로 숨기기
+
+CSS `:empty` / `:has()` 로도 빈 칸을 숨길 수 있지만(7-4 참고), 템플릿 자체에서 잘라내는 방법도 있습니다.
+
+```html
+{{#부상}}<div class="row"><span class="lab">부상</span><span class="val">{{부상}}</span></div>{{/부상}}
+{{^부상}}<div class="row muted">부상 없음</div>{{/부상}}
+```
+
+| 문법 | 동작 |
+|---|---|
+| `{{#키}}…{{/키}}` | 그 필드에 **값이 있으면** 안쪽을 표시 |
+| `{{^키}}…{{/키}}` | 그 필드가 **비어 있으면** 안쪽을 표시 |
+
+- **중첩할 수 있습니다.** 6칸 슬롯 안에 "신규 획득" 표시를 또 두는 식이 가능합니다.
+  ```html
+  {{#소지품1}}<details class="hx-item">
+    <summary>{{소지품1}}{{#소지품1신규}}<span class="new">NEW</span>{{/소지품1신규}}</summary>
+    {{#소지품1설명}}<div class="hx-desc">{{소지품1설명}}</div>{{/소지품1설명}}
+  </details>{{/소지품1}}
+  ```
+- 빈 값 판정은 **빈 문자열과 공백뿐인 값**만 "없음"입니다. 숫자 `0` 과 문자열 `"false"` 는 값으로 봅니다(호감도 0이 사라지면 안 되니까).
+- 짝이 맞지 않으면 그 블록은 **조건 없이 항상 표시**되고, 저장할 때 편집기가 어디가 문제인지 알려줍니다.
+- 안쪽부터 닫아야 합니다. `{{#A}}{{#B}}{{/A}}{{/B}}` 처럼 엇갈리면 경고가 뜹니다.
+
+**CSS 숨김과 언제 뭘 쓰나**
+
+| 상황 | 권장 |
+|---|---|
+| 값 칸/행만 사라지면 되는 단순한 경우 | CSS (`:empty`, `:has()`) |
+| 값이 **속성 안**에 들어가는 경우 (`style="width:{{호감도}}%"`) | 조건 블록 — 빈 값이면 속성 자체가 깨지므로 |
+| 태그 앞뒤 공백/줄바꿈 때문에 `:empty` 가 안 먹을 때 | 조건 블록 (공백 함정이 없음) |
+| `:has()` 미지원 구형 브라우저까지 고려할 때 | 조건 블록 |
+| 값에 따라 색/아이콘을 바꾸는 분기 | CSS + `data-` 속성 (`data-state="{{상태}}"`) |
+
+> CSS 숨김을 쓰든 조건 블록을 쓰든, **AI가 빈칸 대신 `없음`·`-`·`N/A` 를 넣으면 둘 다 동작하지 않습니다.** `instructions` 에 "해당 없으면 빈 문자열로 두고 대체 표기를 쓰지 말 것"을 반드시 넣으세요.
+
+> 필드를 삭제하면 그 필드를 조건으로 쓰던 `{{#키}}…{{/키}}` 블록도 저장 시 함께 정리됩니다.
+
+### 9-7. 출력이 중간에서 끊겼을 때
+
+토큰 한도 등으로 `us-status` 블록이 완성되기 전에 잘리면, v2.0.0 이전에는 형식 인식 실패로 처리돼 **이미 다 나온 캐릭터 값까지 버려졌습니다.** 이제는 완결된 부분까지 자동으로 살려서 저장합니다.
+
+- 대상 3명 중 2명까지 나오고 끊겼다면 그 2명이 저장됩니다.
+- 값 목록 중간에서 끊긴 대상도 버리지 않고, 그때까지 들어온 값만 가진 채로 저장됩니다. 못 받은 값은 빈 칸이 됩니다.
+- 장면(`scene`)이 뒤쪽에 있어 잘렸다면 장면만 비어 저장됩니다.
+- 이렇게 저장되면 상태창 위에 "인식된 부분까지만 저장했습니다" 안내가 뜹니다. 원문은 **설정 → 출력 결과** 탭에 그대로 남으니, 거기서 고쳐서 `형식 인식`을 다시 누를 수도 있습니다.
+
+> 자주 잘린다면 필드 수를 줄이거나, 값이 긴 필드(목록형)를 `instructions` 에서 짧게 쓰도록 제한하는 편이 근본 대책입니다. 특히 캐릭터마다 반복되는 슬롯이 많으면 출력 길이가 빠르게 늘어납니다.
