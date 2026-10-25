@@ -1,0 +1,82 @@
+{
+  "type": "marinara-user-status-item",
+  "version": 1,
+  "exportedAt": "2026-06-08T00:00:00.000Z",
+  "status": {
+    "id": "us-hud-tactical-v1",
+    "name": "🎯 군용 전술 HUD",
+    "description": "금빛 군용 작전 화면\n인물: HP(현재/최대) · 상태 · 부상 · 임무 · 위협 등급 · 호감도 · 위치 · 비고\n장면: 턴 · 날짜 · 시간 · 장소 · 상황\n위협은 LOW ~ CRITICAL 4단계",
+    "fields": [
+      {
+        "key": "HP",
+        "instruction": "현재 체력을 현재/최대 형식으로. 예: 84/100"
+      },
+      {
+        "key": "상태",
+        "instruction": "현재 컨디션·이상. 예: 정상, 경상, 피로"
+      },
+      {
+        "key": "부상",
+        "instruction": "부상 부위 및 내용 짧게. 예: 좌측 어깨 타박상"
+      },
+      {
+        "key": "임무",
+        "instruction": "현재 주 목표를 짧게. 예: 격리 코드 탈취"
+      },
+      {
+        "key": "임무보조",
+        "instruction": "보조 목표가 있으면 짧게. 예: 탈출 루트 확보"
+      },
+      {
+        "key": "위협",
+        "instruction": "화자에 대한 위협 수준. LOW / MODERATE / HIGH / CRITICAL 중 하나"
+      },
+      {
+        "key": "호감도",
+        "instruction": "화자에 대한 호감을 0~100 정수로만. 예: 72"
+      },
+      {
+        "key": "비고",
+        "instruction": "대상에 대한 배경·특이사항 1문장. 예: 과거 특수부대 출신으로 전투 경험이 풍부함"
+      },
+      {
+        "key": "위치",
+        "instruction": "대상의 현재 위치를 짧게. 예: B3 격리구역 감시실"
+      }
+    ],
+    "sceneFields": [
+      {
+        "key": "턴",
+        "instruction": "현재 턴 번호. 예: 31"
+      },
+      {
+        "key": "날짜",
+        "instruction": "현재 날짜. 예: 2387-11-02 (금)"
+      },
+      {
+        "key": "시간",
+        "instruction": "현재 시각. 예: 03:47"
+      },
+      {
+        "key": "장소",
+        "instruction": "현재 장면 위치 짧게. 예: 네오 아카샤 B3 격리구역"
+      },
+      {
+        "key": "상황",
+        "instruction": "현재 벌어지는 상황 1~2문장"
+      }
+    ],
+    "template": "<div class=\"hud\">\n  <div class=\"hud-header\">\n    <div class=\"hud-hname\">\n      <div class=\"hud-hlabel\">OPERATOR ID</div>\n      <div class=\"hud-hval\">{{이름}}</div>\n    </div>\n    <div class=\"hud-hloc\">\n      <div class=\"hud-hlocl\">LAST KNOWN POS.</div>\n      <div class=\"hud-hlocv\">{{위치}}</div>\n    </div>\n  </div>\n\n  <div class=\"hud-trifold\">\n    <div class=\"hud-cell\">\n      <div class=\"hud-clabel\">INTEGRITY</div>\n      <div class=\"hud-cval\">{{HP}}</div>\n      <div class=\"hud-csub\">&#9660; {{상태}}</div>\n    </div>\n    <div class=\"hud-cell\">\n      <div class=\"hud-clabel\">CONDITION</div>\n      <div class=\"hud-cval\">{{부상}}</div>\n    </div>\n    <div class=\"hud-cell\">\n      <div class=\"hud-clabel\">OBJECTIVE</div>\n      <div class=\"hud-cval\">{{임무}}</div>\n      <div class=\"hud-csub\">+ {{임무보조}}</div>\n    </div>\n  </div>\n\n  <div class=\"hud-threat\">\n    <span class=\"hud-tlabel\">THREAT</span>\n    <div class=\"hud-tline\"></div>\n    <span class=\"hud-tval\">{{위협}}</span>\n    <div class=\"hud-tline2\"></div>\n  </div>\n\n  <div class=\"hud-rapport\">\n    <div class=\"hud-rhead\">\n      <span>RAPPORT INDEX &nbsp;&#9472;&nbsp; {{이름}}</span>\n      <span class=\"hud-rpct\">{{호감도}}%</span>\n    </div>\n    <div class=\"hud-rtrack\">\n      <div class=\"hud-rfill\" style=\"width:{{호감도}}%\"></div>\n    </div>\n    <div class=\"hud-rtick\">\n      <span>0</span><span>25</span><span>50</span><span>75</span><span>100</span>\n    </div>\n  </div>\n\n  <div class=\"hud-note\">\n    <span class=\"hud-ntag\">// NOTE</span>\n    <span class=\"hud-ntext\">{{비고}}</span>\n  </div>\n\n  <div class=\"hud-input-row\">\n    <div class=\"hud-input\">&gt;_ COMMAND INPUT...</div>\n    <div class=\"hud-send\">SEND</div>\n  </div>\n</div>",
+    "css": "*{box-sizing:border-box;margin:0;padding:0}\n.hud{font-family:\"Courier New\",Courier,monospace;width:100%;background:#1e1e12;border:1px solid #4a4a2a;border-radius:3px;overflow:hidden;color:#a8a880;box-shadow:0 0 0 1px rgba(0,0,0,.7),0 6px 20px rgba(0,0,0,.7)}\n.hud-header{background:#141410;border-bottom:1px solid #4a4a2a;display:flex}\n.hud-hname{flex:1;padding:8px 12px;border-right:1px solid #3a3a22}\n.hud-hlabel{font-size:9px;color:#4a4a30;letter-spacing:2px;margin-bottom:3px}\n.hud-hval{font-size:13px;font-weight:700;color:#e0d090;letter-spacing:.5px}\n.hud-hloc{padding:8px 12px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:3px}\n.hud-hlocl{font-size:9px;color:#4a4a30;letter-spacing:2px}\n.hud-hlocv{font-size:11px;color:#c09000;font-weight:700;letter-spacing:.5px}\n.hud-trifold{display:flex;border-bottom:1px solid #3a3a22}\n.hud-cell{flex:1;padding:8px 10px;border-right:1px solid #2a2a18}\n.hud-cell:last-child{border-right:none}\n.hud-clabel{font-size:9px;color:#4a4a30;letter-spacing:1.5px;margin-bottom:5px}\n.hud-cval{font-size:11px;color:#c8c8a0;font-weight:600;line-height:1.4;overflow-wrap:break-word;word-break:keep-all}\n.hud-csub{font-size:10px;color:#6a6a50;margin-top:2px;overflow-wrap:break-word;word-break:keep-all}\n.hud-threat{display:flex;align-items:center;background:#252518;border-bottom:1px solid #3a3a22;padding:6px 12px;gap:10px}\n.hud-tlabel{font-size:9px;color:#4a4a30;letter-spacing:2px;flex:none}\n.hud-tline{flex:1;height:1px;background:#3a3a22}\n.hud-tval{font-size:12px;font-weight:700;color:#1a1a08;background:#c09000;padding:2px 14px;letter-spacing:2px}\n.hud-tline2{flex:1;height:1px;background:#3a3a22}\n.hud-rapport{padding:8px 12px;border-bottom:1px solid #3a3a22;background:#1a1a10}\n.hud-rhead{display:flex;justify-content:space-between;font-size:9px;color:#4a4a30;letter-spacing:1.5px;margin-bottom:5px}\n.hud-rpct{color:#c09000;font-weight:700;font-size:11px}\n.hud-rtrack{height:4px;background:#141410;border:1px solid #2a2a18;margin-bottom:3px;position:relative}\n.hud-rfill{height:100%;background:#c09000}\n.hud-rtick{display:flex;justify-content:space-between;font-size:9px;color:#2a2a18}\n.hud-note{background:#141410;padding:7px 12px;display:flex;gap:8px;align-items:flex-start;border-bottom:1px solid #2a2a18}\n.hud-ntag{font-size:9px;color:#c09000;letter-spacing:1.5px;flex:none;padding-top:1px}\n.hud-ntext{font-size:11px;color:#6a6a50;line-height:1.5;overflow-wrap:break-word;word-break:keep-all}\n.hud-input-row{display:flex;align-items:center;gap:0;background:#0e0e0a;padding:6px 8px;border-top:1px solid #2a2a18}\n.hud-input{flex:1;background:transparent;border:1px solid #3a3a22;color:#c8c8a0;font-family:\"Courier New\",Courier,monospace;font-size:11px;padding:4px 8px;outline:none;letter-spacing:.5px}\n.hud-input::placeholder{color:#3a3a28}\n.hud-input:focus{border-color:#c09000}\n.hud-send{background:#c09000;color:#1a1a08;border:none;font-family:\"Courier New\",Courier,monospace;font-size:10px;font-weight:700;letter-spacing:1.5px;padding:5px 12px;cursor:pointer;flex:none;margin-left:4px}",
+    "sceneTemplate": "<div class=\"hs\">\n  <div class=\"hs-top\">\n    <span class=\"hs-num\">T-{{턴}}</span>\n    <span class=\"hs-sep\">&#9472;</span>\n    <span class=\"hs-dt\">{{날짜}} &nbsp;|&nbsp; {{시간}}</span>\n    <span class=\"hs-loc\">{{장소}}</span>\n  </div>\n  <div class=\"hs-body\">\n    <div class=\"hs-lmark\"></div>\n    <div class=\"hs-log\">{{상황}}</div>\n  </div>\n</div>",
+    "sceneCss": ".hs{font-family:\"Courier New\",Courier,monospace;width:100%;background:#1e1e12;border:1px solid #4a4a2a;border-radius:3px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.7);margin-bottom:6px}\n.hs-top{background:#141410;padding:6px 12px;border-bottom:1px solid #3a3a22;display:flex;align-items:center;gap:8px;flex-wrap:wrap}\n.hs-num{font-size:11px;font-weight:700;color:#c09000;letter-spacing:2px;flex:none}\n.hs-sep{color:#3a3a22;flex:none}\n.hs-dt{font-size:11px;color:#6a6a48;flex:1}\n.hs-loc{font-size:10px;color:#e0d090;background:#2a2a14;border:1px solid #4a4a2a;padding:2px 8px;letter-spacing:.5px;flex:none}\n.hs-body{padding:8px 12px 10px;display:flex;gap:10px;align-items:flex-start}\n.hs-lmark{width:2px;background:#4a4a2a;flex:none;align-self:stretch;margin-top:2px}\n.hs-log{font-size:11px;line-height:1.65;color:#8a8a68;overflow-wrap:break-word;word-break:keep-all}",
+    "tabTemplate": "{{이름}}",
+    "tabCss": "",
+    "sceneButtonTemplate": "LOG",
+    "sceneButtonCss": "",
+    "sceneDefaultCollapsed": false,
+    "instructions": "전술 HUD (골드) 형식으로 출력. HP는 현재/최대 형식(84/100). 위협은 LOW/MODERATE/HIGH/CRITICAL 중 하나. 호감도는 0~100 정수만. 위치는 짧게. 부상이 없으면 '이상 없음'.",
+    "windowCss": "/* == 전술 HUD 골드 · 윈도우 테마 == */\n#us-float, #us-prompt-bubble-window {\n  border-radius: 3px;\n  box-shadow: 0 0 0 1px rgba(0,0,0,.7), 0 6px 20px rgba(0,0,0,.7);\n  --us-float-bg: #1e1e12;\n  --us-float-fg: #a8a880;\n  --us-float-border: #4a4a2a;\n  --us-float-muted: #6a6a50;\n  --us-float-primary: #c09000;\n  --us-float-primary-fg: #1a1a08;\n  --us-float-secondary: #242418;\n  --us-float-accent: #2a2a18;\n}\n#us-float .us-f-title,\n#us-float .us-tab,\n#us-float .us-scene-button {\n  font-family: \"Courier New\", Courier, monospace;\n  letter-spacing: .5px;\n}\n.us-box {\n  --us-box-bg: #1e1e12;\n  --us-box-fg: #a8a880;\n  --us-box-border: #4a4a2a;\n  --us-box-muted: #6a6a50;\n  --us-box-input-bg: #141410;\n  --us-box-secondary: #242418;\n  --us-box-accent: #2a2a18;\n  --us-box-primary: #c09000;\n  --us-box-primary-fg: #1a1a08;\n  --us-box-switch-off: #4a4a2a;\n  --us-box-switch-on: #c09000;\n  --us-box-switch-thumb: #1e1e12;\n}",
+    "windowCssMode": "custom"
+  }
+}

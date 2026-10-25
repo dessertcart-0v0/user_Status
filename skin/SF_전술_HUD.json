@@ -1,0 +1,104 @@
+{
+  "type": "marinara-user-status-item",
+  "version": 1,
+  "exportedAt": "2026-10-22T08:14:50.202Z",
+  "status": {
+    "id": "us-hud-SF-v1",
+    "name": "🛰 SF 전술 HUD",
+    "description": "푸른 빛 SF 작전 단말\n인물: HP(현재/최대) · 상태 · 부상 · 임무(주 1 · 보조 2) · 위협 등급 · 호감도 · 위치 · 관측 기록\n위험 수치: 전투 · 탐지 · 탈출 가능성(%)\n장면: 턴 · 날짜 · 시간 · 구역 · 상황\n군용 전술 HUD의 SF판",
+    "fields": [
+      {
+        "key": "HP",
+        "instruction": "현재 체력을 현재/최대 형식으로. 예: 84/100"
+      },
+      {
+        "key": "상태",
+        "instruction": "현재 컨디션·이상. 예: NOMINAL, INJURED, CRITICAL"
+      },
+      {
+        "key": "부상",
+        "instruction": "부상 부위 및 내용 짧게. 예: 좌측 어깨 타박"
+      },
+      {
+        "key": "임무주",
+        "instruction": "주 목표를 짧게. 예: 격리 봉인 해제 코드 탈취"
+      },
+      {
+        "key": "임무보1",
+        "instruction": "보조 목표 1. 예: 생존자 확인"
+      },
+      {
+        "key": "임무보2",
+        "instruction": "보조 목표 2. 예: 탈출 루트 확보"
+      },
+      {
+        "key": "위협",
+        "instruction": "화자에 대한 위협 수준. LOW / MODERATE / HIGH / CRITICAL 중 하나"
+      },
+      {
+        "key": "전투위험",
+        "instruction": "전투 위험도 0~100 정수. 예: 80"
+      },
+      {
+        "key": "탐지위험",
+        "instruction": "탐지 위험도 0~100 정수. 예: 55"
+      },
+      {
+        "key": "탈출가능",
+        "instruction": "탈출 가능성 0~100 정수. 예: 30"
+      },
+      {
+        "key": "호감도",
+        "instruction": "화자에 대한 호감을 0~100 정수로만. 예: 72"
+      },
+      {
+        "key": "비고",
+        "instruction": "대상에 대한 배경·특이사항 1문장. 예: 과거 특수부대 출신으로 전투 경험이 풍부함"
+      },
+      {
+        "key": "위치",
+        "instruction": "대상의 현재 위치를 짧게. 예: QUARANTINE WATCH ROOM · B3 WING"
+      }
+    ],
+    "folds": [],
+    "sceneFolds": [],
+    "sceneFields": [
+      {
+        "key": "턴",
+        "instruction": "현재 턴 번호. 예: 31"
+      },
+      {
+        "key": "날짜",
+        "instruction": "현재 날짜와 요일 영문으로. 예: 2387-11-02 FRI"
+      },
+      {
+        "key": "시간",
+        "instruction": "현재 시각 초단위까지. 예: 03:47:09"
+      },
+      {
+        "key": "구역",
+        "instruction": "섹터·구역명 짧게. 예: SECTOR B3 · NEO AKASHA"
+      },
+      {
+        "key": "상황",
+        "instruction": "현재 벌어지는 상황 1~2문장"
+      }
+    ],
+    "template": "<article class=\"sf-card\">\n <div class=\"sf-topline\"><span>SYS // BIO-TELEMETRY</span><span aria-hidden=\"true\">▰ ▰ ▰</span></div><header class=\"sf-ident\"><div class=\"sf-emblem\" aria-hidden=\"true\"><i></i></div><div class=\"sf-idinfo\"><div class=\"sf-kicker\">PERSONNEL RECORD</div><h2 class=\"sf-name\">{{이름}}</h2><p class=\"sf-loc\">{{위치}}</p></div><span class=\"sf-side\" aria-hidden=\"true\">BIO / DATA</span></header>\n <div class=\"sf-vital\"><div><span class=\"sf-label\">HP <small>생체 신호</small></span><strong class=\"sf-hp\">{{HP}}</strong></div><div class=\"sf-condition\"><span class=\"sf-label\">상태</span><strong>{{상태}}</strong><p>{{부상}}</p></div></div>\n <section class=\"sf-section\"><h3 class=\"sf-heading\"><span>01</span> 임무 브리핑 <small>OBJECTIVES</small></h3><div class=\"sf-mission sf-main\"><span>[ P0 ]</span><p>{{임무주}}</p></div><div class=\"sf-mission\"><span>[ S1 ]</span><p>{{임무보1}}</p></div><div class=\"sf-mission\"><span>[ S2 ]</span><p>{{임무보2}}</p></div></section>\n <section class=\"sf-section\"><h3 class=\"sf-heading\"><span>02</span> 위협 분석 <small>THREAT</small></h3><div class=\"sf-risk\" data-level=\"{{위협}}\"><span>위협 등급</span><strong>{{위협}}</strong></div>\n <div class=\"sf-metric sf-danger\"><div><span>전투 위험</span><b>{{전투위험}}<small>%</small></b></div><div class=\"sf-track\" role=\"meter\" aria-label=\"전투 위험\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"{{전투위험}}\"><i style=\"width:clamp(0%,{{전투위험}}%,100%)\"></i></div></div>\n <div class=\"sf-metric sf-warn\"><div><span>탐지 위험</span><b>{{탐지위험}}<small>%</small></b></div><div class=\"sf-track\" role=\"meter\" aria-label=\"탐지 위험\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"{{탐지위험}}\"><i style=\"width:clamp(0%,{{탐지위험}}%,100%)\"></i></div></div>\n <div class=\"sf-metric sf-safe\"><div><span>탈출 가능</span><b>{{탈출가능}}<small>%</small></b></div><div class=\"sf-track\" role=\"meter\" aria-label=\"탈출 가능성\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"{{탈출가능}}\"><i style=\"width:clamp(0%,{{탈출가능}}%,100%)\"></i></div></div></section>\n <section class=\"sf-section\"><h3 class=\"sf-heading\"><span>03</span> 관계 지수 <small>RAPPORT</small></h3><div class=\"sf-metric\"><div><span>호감도</span><b>{{호감도}}<small> / 100</small></b></div><div class=\"sf-track\" role=\"meter\" aria-label=\"호감도\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"{{호감도}}\"><i style=\"width:clamp(0%,{{호감도}}%,100%)\"></i></div></div></section>\n {{#비고}}<section class=\"sf-intel\"><span class=\"sf-label\">관측 기록 / INTEL</span><p>{{비고}}</p></section>{{/비고}}\n <footer class=\"sf-foot\"><span aria-hidden=\"true\">&gt;_</span><span>END OF TELEMETRY</span><span class=\"sf-footline\" aria-hidden=\"true\"></span></footer>\n</article>",
+    "css": ":host{container-type:inline-size}*,*::before,*::after{box-sizing:border-box}[role=\"meter\"]{min-width:0}[role=\"meter\"]>i,[role=\"meter\"]>.mw-fill{width:0}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}\n.sf-card{--sf-cyan:#7dffd1;position:relative;isolation:isolate;width:100%;font-family:\"Cascadia Code\",\"Consolas\",\"Courier New\",monospace,\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:12px;line-height:1.7;color:#b1ebd9;background:radial-gradient(ellipse at 0 0,#0e5c4933,transparent 60%),repeating-linear-gradient(0deg,#72ffd305 0 1px,transparent 1px 4px),#030e12;border:1px solid #2d8a70;border-radius:1px;overflow:hidden;overflow-wrap:anywhere;box-shadow:inset 0 0 26px #37ffbd0b;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}\n.sf-card::before{content:\"\";position:absolute;inset:0;pointer-events:none;z-index:2;background:linear-gradient(#8effdf,#8effdf) left top/26px 2px,linear-gradient(#8effdf,#8effdf) right bottom/26px 2px;background-repeat:no-repeat}.sf-card::after{content:\"\";position:absolute;inset:0;pointer-events:none;z-index:2;opacity:0;background:linear-gradient(0deg,transparent 46%,#7dffd30b 49%,#b9ffe35c 50%,transparent 50.3%)}\n.sf-topline{display:flex;justify-content:space-between;gap:10px;padding:8px 13px;color:#76f8c6;border-bottom:1px solid #1a5a4c;background:#061e20;font-size:9px;line-height:1.5;letter-spacing:.08em;text-shadow:0 0 8px #66ffc550}.sf-topline>span:last-child{color:#3fba9b;font-size:8px;letter-spacing:2px;flex:none}.sf-ident{position:relative;display:flex;gap:13px;align-items:center;padding:19px 15px 18px;background:linear-gradient(90deg,#0c2a29a6,#031216),repeating-linear-gradient(90deg,transparent 0 17px,#2f705533 17px 18px);border-bottom:1px solid #23604f}.sf-emblem{position:relative;display:grid;place-items:center;width:49px;height:49px;flex:none;border:1px solid #4eeeb577;border-radius:50%;background:linear-gradient(90deg,transparent 49%,#7dffd340 50%,transparent 52%),linear-gradient(0deg,transparent 49%,#7dffd340 50%,transparent 52%);box-shadow:0 0 12px #34ffc225,inset 0 0 10px #1dba8622}.sf-emblem::before{content:\"\";position:absolute;inset:7px;border:1px solid #7dffd3;border-radius:50%;z-index:1}.sf-emblem::after{content:\"\";position:absolute;inset:4px;border-radius:50%;pointer-events:none;background:conic-gradient(transparent 0deg 230deg,#7dffd30f 270deg,#7dffd388 358deg,transparent 360deg)}.sf-emblem i{position:relative;z-index:1;display:block;width:7px;height:7px;transform:rotate(45deg);background:#caffea;box-shadow:0 0 9px #7dffd3}.sf-idinfo{flex:1;min-width:0}.sf-kicker{color:#64caa9;font-size:8px;letter-spacing:.12em}.sf-name{font-family:\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:25px;line-height:1.4;letter-spacing:.03em;color:#d7fff0;text-shadow:0 0 13px #49ffc935;margin:6px 0 4px;font-weight:700}.sf-loc{font-size:9px;color:#8acbb9;margin:0;line-height:1.8}.sf-side{writing-mode:vertical-rl;font-size:8px;letter-spacing:.14em;color:#4bbd9b}\n.sf-vital{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;padding:18px 15px;border-bottom:1px solid #1a5145;background:linear-gradient(135deg,#103b302d,#031217)}.sf-label{display:block;font-size:10px;color:#79d9bc;letter-spacing:.04em}.sf-label small{font-family:\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:9px;color:#729d92;margin-left:6px}.sf-hp{font-size:32px;line-height:1.2;letter-spacing:-.06em;font-weight:400;color:#a2ffd9;display:block;margin-top:9px;text-shadow:0 0 15px #54ffc94d}.sf-condition{min-width:0;padding:0}.sf-condition strong{display:inline-block;max-width:100%;font-size:11px;line-height:1.6;margin-top:8px;padding:1px 6px;color:#9bf9d1;border:1px solid #296852;background:#0d342a}.sf-condition p{font-family:\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:10px;line-height:1.8;color:#9bd5c4;margin:7px 0 0}\n.sf-section{padding:15px 15px 17px;border-bottom:1px solid #174c43}.sf-heading{display:flex;align-items:baseline;gap:7px;font-family:\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:11px;font-weight:500;color:#c2f5e3;letter-spacing:.04em;margin:0 0 13px}.sf-heading>span{font-family:\"Cascadia Code\",\"Consolas\",\"Courier New\",monospace;font-size:10px;color:#7dffd1;text-shadow:0 0 7px #5fffc65e}.sf-heading small{font-family:\"Cascadia Code\",\"Consolas\",\"Courier New\",monospace;font-size:8px;letter-spacing:.09em;color:#5ab99c;margin-left:auto}\n.sf-mission{display:flex;align-items:baseline;gap:10px;margin-top:10px}.sf-mission>span{font-size:9px;color:#65cdae;flex:none;min-width:38px}.sf-mission p{font-family:\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:11px;line-height:1.85;color:#b3decf;margin:0;min-width:0}.sf-main{padding:10px 9px;border:1px solid #28654e;background:#0c302566;margin:0 0 12px;box-shadow:inset 0 0 14px #5bffa707}.sf-main>span{color:#9effcb;min-width:38px}.sf-main p{color:#dbffec;font-weight:500}\n.sf-risk{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding-bottom:10px;margin-bottom:5px;border-bottom:1px dashed #22594c;font-family:\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:10px;color:#81bea7}.sf-risk strong{font-family:\"Cascadia Code\",\"Consolas\",\"Courier New\",monospace;font-size:20px;font-weight:400;letter-spacing:.1em;color:#8dffd0;text-shadow:0 0 10px currentColor}.sf-risk[data-level=\"HIGH\"] strong{color:#ffb385;text-shadow:0 0 12px #ff9b6844}.sf-risk[data-level=\"CRITICAL\"] strong{color:#ff827b;text-shadow:0 0 12px #ff827b44}.sf-risk[data-level=\"MODERATE\"] strong{color:#f0d795;text-shadow:0 0 12px #f0d79533}\n.sf-metric{--tone:#7dffd1;margin-top:11px}.sf-danger{--tone:#ff9c83}.sf-warn{--tone:#edce82}.sf-safe{--tone:#75e8ed}.sf-metric>div:first-child{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-family:\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:10px;color:#96d5bd;margin-bottom:6px}.sf-metric b{font-family:\"Cascadia Code\",\"Consolas\",\"Courier New\",monospace;font-size:14px;font-weight:400;color:var(--tone)}.sf-metric small{font-size:9px;color:#73a895}.sf-track{height:6px;background:repeating-linear-gradient(90deg,#163a30 0 8px,#041010 8px 10px);overflow:hidden;box-shadow:0 0 0 1px #153c31}.sf-track i{display:block;height:100%;transform-origin:left;background:repeating-linear-gradient(90deg,var(--tone) 0 8px,transparent 8px 10px);filter:drop-shadow(0 0 3px var(--tone))}\n.sf-intel{padding:15px 15px 18px;background:#06201d44}.sf-intel p{font-family:\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:11px;line-height:1.95;color:#9cd6c1;margin:10px 0 0;padding:0}.sf-foot{display:flex;gap:8px;align-items:center;padding:12px 15px 20px;border-top:1px solid #225c4d;background:#031013;font-size:8px;letter-spacing:.09em;color:#57b899}.sf-foot>span:first-child{color:#87ffd1;flex:none}.sf-foot>span:first-child::after{content:\"\";display:inline-block;width:5px;height:8px;background:#7dffd1;margin-left:5px;vertical-align:baseline;opacity:.6}.sf-footline{height:8px;max-width:37px;flex:1;margin-left:auto;background:repeating-linear-gradient(90deg,#67bd9944 0 1px,transparent 1px 4px)}\n@keyframes sf-scan{0%{transform:translateY(-100%);opacity:0}8%,90%{opacity:.55}100%{transform:translateY(100%);opacity:0}}@keyframes sf-radar{to{transform:rotate(360deg)}}@keyframes sf-power-on{from{opacity:.15}to{opacity:1}}@keyframes sf-meter-on{from{transform:scaleX(0)}to{transform:scaleX(1)}}@keyframes sf-diode{0%,100%{opacity:.65}50%{opacity:1}}@keyframes sf-cursor{0%,55%{opacity:.85}56%,100%{opacity:0}}\n@media(prefers-reduced-motion:no-preference){.sf-card::after{animation:sf-scan 7s .5s linear infinite}.sf-emblem::after{animation:sf-radar 5.5s linear infinite}.sf-emblem i{animation:sf-diode 3.8s ease-in-out infinite}.sf-ident,.sf-vital{animation:sf-power-on .5s ease-out both}.sf-section{animation:sf-power-on .6s .1s ease-out both}.sf-track i{animation:sf-meter-on 1.1s .2s ease-out both}.sf-warn .sf-track i{animation-delay:.3s}.sf-safe .sf-track i{animation-delay:.4s}.sf-foot>span:first-child::after{animation:sf-cursor 1.8s steps(1,end) infinite}.sf-card:hover::after{animation-play-state:paused}}\n@container(max-width:280px){.sf-topline{padding-left:12px;padding-right:12px;font-size:8px;letter-spacing:.03em}.sf-ident{padding-left:12px;padding-right:12px;gap:10px}.sf-emblem{width:38px;height:38px}.sf-name{font-size:22px}.sf-kicker{font-size:7px;letter-spacing:.06em}.sf-side{display:none}.sf-vital{padding-left:12px;padding-right:12px;gap:10px}.sf-hp{font-size:27px}.sf-section{padding-left:12px;padding-right:12px}.sf-heading small{font-size:7px}.sf-loc{font-size:8px}}",
+    "sceneTemplate": "<section class=\"sf-scene\"><header class=\"sf-shead\"><span class=\"sf-seq\">LOG <b>{{턴}}</b></span><span class=\"sf-date\">{{날짜}}<br>{{시간}}</span></header><div class=\"sf-sbody\"><div class=\"sf-slabel\">[ SECTOR ] 작전 구역</div><h2 class=\"sf-zone\">{{구역}}</h2><div class=\"sf-feed\"><p>{{상황}}</p></div></div><div class=\"sf-sfoot\" aria-hidden=\"true\"><span>╱╱╱</span><span>MISSION ARCHIVE</span></div></section>",
+    "sceneCss": ":host{container-type:inline-size}*,*::before,*::after{box-sizing:border-box}[role=\"meter\"]{min-width:0}[role=\"meter\"]>i,[role=\"meter\"]>.mw-fill{width:0}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}\n.sf-scene{position:relative;width:100%;font-family:\"Cascadia Code\",\"Consolas\",\"Courier New\",monospace,\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;color:#b7edda;background:linear-gradient(135deg,#09221f,#030f14);border:1px solid #2d8a70;border-radius:1px;overflow:hidden;box-shadow:inset 0 0 20px #19edb50a}.sf-shead{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:1px solid #2b6754;background:#0a2927}.sf-shead::after{content:\"\";position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(110deg,transparent 38%,#7dffd32b 50%,transparent 62%)}.sf-seq{font-size:9px;letter-spacing:.14em;color:#6cc4a7}.sf-seq b{font-size:24px;font-weight:400;letter-spacing:0;color:#9affd6;text-shadow:0 0 10px #7dffd347;margin-left:7px}.sf-date{font-size:9px;text-align:right;color:#90d9bd;line-height:1.7;min-width:0}.sf-sbody{padding:16px 15px 17px}.sf-slabel{font-size:8px;color:#62c6a5;letter-spacing:.07em}.sf-zone{font-family:\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:18px;line-height:1.6;color:#c7ffe4;font-weight:500;margin:7px 0 13px;text-shadow:0 0 10px #7dffd32b}.sf-feed{border-top:1px dashed #275d4d;padding-top:12px}.sf-feed p{font-family:\"Malgun Gothic\",\"맑은 고딕\",\"Apple SD Gothic Neo\",system-ui,sans-serif;font-size:11px;line-height:1.95;color:#a8dbc7;overflow-wrap:anywhere;margin:0}.sf-sfoot{display:flex;gap:12px;justify-content:space-between;padding:0 15px 18px;color:#429e7e;font-size:8px;letter-spacing:.1em}.sf-sfoot>span:first-child{color:#6be6b1}\n@keyframes sf-log-sweep{0%,40%{transform:translateX(-110%);opacity:0}44%{opacity:1}65%{transform:translateX(110%);opacity:1}66%,100%{transform:translateX(110%);opacity:0}}@keyframes sf-log-in{from{opacity:.2}to{opacity:1}}@media(prefers-reduced-motion:no-preference){.sf-shead::after{animation:sf-log-sweep 7s linear infinite}.sf-zone,.sf-feed{animation:sf-log-in .6s .1s ease-out both}}",
+    "tabTemplate": "{{이름}}",
+    "tabCss": "",
+    "sceneButtonTemplate": "MISSION LOG · 작전 기록",
+    "sceneButtonCss": "",
+    "sceneDefaultCollapsed": false,
+    "charCollapseMode": "global",
+    "charFieldsBackup": [],
+    "valueLineBreaks": "off",
+    "valueHtml": false,
+    "instructions": "전술 HUD (블루) 형식으로 출력. HP는 현재/최대 형식(84/100). 위협은 LOW/MODERATE/HIGH/CRITICAL 중 하나. 호감도는 0~100 정수만. 위치는 영문+한글 혼용 가능. 전투위험·탐지위험·탈출가능은 0~100 정수만.",
+    "windowCss": "#us-float,#us-prompt-bubble-window{--us-float-bg:#041317;--us-float-fg:#c5ffe4;--us-float-border:#28694f;--us-float-muted:#73c9a6;--us-float-primary:#7dffd1;--us-float-primary-fg:#041911;--us-float-secondary:#0b2927;--us-float-accent:#123b31;font-family:\"Cascadia Code\",\"Consolas\",\"Courier New\",monospace;border-radius:2px;box-shadow:0 0 0 1px #102d23,0 0 20px #4dffbd18,0 10px 28px #00000044}\n#us-float{padding:10px 10px 18px}#us-float .us-f-bar{padding:0 2px 8px;border-bottom:1px solid #28694f;background:#041317}#us-float .us-f-title{font-family:\"Cascadia Code\",\"Consolas\",\"Courier New\",monospace;letter-spacing:.06em;color:#c5ffe4}#us-float .us-tab{font-family:\"Cascadia Code\",\"Consolas\",\"Courier New\",monospace;border-radius:1px;min-height:30px;padding:5px 10px}#us-float .us-scene-button{font-family:\"Cascadia Code\",\"Consolas\",\"Courier New\",monospace;border-radius:1px;min-height:36px;letter-spacing:.06em}#us-float .us-f-body{padding-bottom:2px}#us-float .us-f-btn:focus-visible,#us-float .us-tab:focus-visible,#us-float .us-scene-button:focus-visible{outline:2px solid #7dffd1;outline-offset:2px}\n.us-box{--us-box-bg:#041317;--us-box-fg:#c5ffe4;--us-box-border:#28694f;--us-box-muted:#73c9a6;--us-box-input-bg:#020d11;--us-box-secondary:#0b2927;--us-box-accent:#123b31;--us-box-primary:#7dffd1;--us-box-primary-fg:#041911;--us-box-switch-off:#28694f;--us-box-switch-on:#7dffd1;--us-box-switch-thumb:#041911}\n@supports selector(::-webkit-scrollbar){#us-float .us-f-body,#us-float .us-f-content,.us-box textarea{scrollbar-width:auto;scrollbar-color:auto}}#us-float .us-f-body::-webkit-scrollbar,#us-float .us-f-content::-webkit-scrollbar,.us-box textarea::-webkit-scrollbar{width:7px;height:7px}#us-float .us-f-body::-webkit-scrollbar-track,#us-float .us-f-content::-webkit-scrollbar-track,.us-box textarea::-webkit-scrollbar-track{background:transparent;margin:6px 0}#us-float .us-f-body::-webkit-scrollbar-thumb,#us-float .us-f-content::-webkit-scrollbar-thumb,.us-box textarea::-webkit-scrollbar-thumb{background:#28694f;border:2px solid transparent;background-clip:padding-box;border-radius:8px}#us-float .us-f-body::-webkit-scrollbar-corner,#us-float .us-f-content::-webkit-scrollbar-corner{background:transparent}",
+    "windowCssMode": "custom"
+  }
+}

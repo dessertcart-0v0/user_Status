@@ -1,0 +1,197 @@
+{
+  "type": "marinara-user-status-item",
+  "version": 1,
+  "exportedAt": "2026-10-22T07:32:49.102Z",
+  "status": {
+    "id": "us-retro-terminal-pixel",
+    "name": "🎒 트레이너 도감",
+    "description": "포켓 게임기에 포켓몬 파티를 더한 판\n인물: 관계 · 호감도(게이지) · 기분 · 상태 · 복장 · 속마음\n파티: 포켓몬 6마리(도트 그림 · 볼 · 정보), 마리마다 접기\n장면: 시간 · 장소 · 날씨 · 장면 묘사\n포켓몬 세계관 전용",
+    "fields": [
+      {
+        "key": "이름",
+        "instruction": "현재 탭 캐릭터의 이름 (절대 누락 금지)"
+      },
+      {
+        "key": "관계",
+        "instruction": "상대와의 현재 관계 (예: 소꿉친구, 라이벌)"
+      },
+      {
+        "key": "호감도",
+        "instruction": "호감도 (0~100 숫자만)"
+      },
+      {
+        "key": "기분",
+        "instruction": "현재 기분을 한 단어로 (예: 들뜸, 차분함)"
+      },
+      {
+        "key": "상태",
+        "instruction": "대상의 현재 상태나 행동 (예: 배낭을 정리하는 중)"
+      },
+      {
+        "key": "복장",
+        "instruction": "현재 옷차림을 한국어로 짧게 (예: 검은 비행 재킷에 군용 부츠, 헐렁한 후드티와 청바지). 갈아입는 장면이 나왔을 때만 변경"
+      },
+      {
+        "key": "속마음",
+        "instruction": "현재 상황에 대한 내면 독백 1문장 ({{user}}는 생략)"
+      },
+      {
+        "key": "포켓몬1스프라이트",
+        "instruction": "종 슬러그(영문소문자). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬1볼스프라이트",
+        "instruction": "볼 슬러그(예 poke-ball). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬1캡션",
+        "instruction": "3줄: 이름(성별) / 볼 (볼 안·밖) / 성격"
+      },
+      {
+        "key": "포켓몬1정보",
+        "instruction": "기분+얼굴 / 현재행동 / 기술 각 1줄씩 ▶"
+      },
+      {
+        "key": "포켓몬2스프라이트",
+        "instruction": "종 슬러그(영문소문자). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬2볼스프라이트",
+        "instruction": "볼 슬러그(예 poke-ball). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬2캡션",
+        "instruction": "3줄: 이름(성별) / 볼 (볼 안·밖) / 성격"
+      },
+      {
+        "key": "포켓몬2정보",
+        "instruction": "기분+얼굴 / 현재행동 / 기술 각 1줄씩 ▶"
+      },
+      {
+        "key": "포켓몬3스프라이트",
+        "instruction": "종 슬러그(영문소문자). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬3볼스프라이트",
+        "instruction": "볼 슬러그(예 poke-ball). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬3캡션",
+        "instruction": "3줄: 이름(성별) / 볼 (볼 안·밖) / 성격"
+      },
+      {
+        "key": "포켓몬3정보",
+        "instruction": "기분+얼굴 / 현재행동 / 기술 각 1줄씩 ▶"
+      },
+      {
+        "key": "포켓몬4스프라이트",
+        "instruction": "종 슬러그(영문소문자). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬4볼스프라이트",
+        "instruction": "볼 슬러그(예 poke-ball). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬4캡션",
+        "instruction": "3줄: 이름(성별) / 볼 (볼 안·밖) / 성격"
+      },
+      {
+        "key": "포켓몬4정보",
+        "instruction": "기분+얼굴 / 현재행동 / 기술 각 1줄씩 ▶"
+      },
+      {
+        "key": "포켓몬5스프라이트",
+        "instruction": "종 슬러그(영문소문자). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬5볼스프라이트",
+        "instruction": "볼 슬러그(예 poke-ball). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬5캡션",
+        "instruction": "3줄: 이름(성별) / 볼 (볼 안·밖) / 성격"
+      },
+      {
+        "key": "포켓몬5정보",
+        "instruction": "기분+얼굴 / 현재행동 / 기술 각 1줄씩 ▶"
+      },
+      {
+        "key": "포켓몬6스프라이트",
+        "instruction": "종 슬러그(영문소문자). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬6볼스프라이트",
+        "instruction": "볼 슬러그(예 poke-ball). 규칙은 아래 [포켓몬 슬롯] 참고"
+      },
+      {
+        "key": "포켓몬6캡션",
+        "instruction": "3줄: 이름(성별) / 볼 (볼 안·밖) / 성격"
+      },
+      {
+        "key": "포켓몬6정보",
+        "instruction": "기분+얼굴 / 현재행동 / 기술 각 1줄씩 ▶"
+      }
+    ],
+    "folds": [
+      {
+        "name": "포켓몬 1",
+        "at": 7
+      },
+      {
+        "name": "포켓몬 2",
+        "at": 11
+      },
+      {
+        "name": "포켓몬 3",
+        "at": 15
+      },
+      {
+        "name": "포켓몬 4",
+        "at": 19
+      },
+      {
+        "name": "포켓몬 5",
+        "at": 23
+      },
+      {
+        "name": "포켓몬 6",
+        "at": 27
+      }
+    ],
+    "sceneFolds": [],
+    "sceneFields": [
+      {
+        "key": "시간",
+        "instruction": "현재 시각 (예: 오전 10시)"
+      },
+      {
+        "key": "장소",
+        "instruction": "현재 위치 (예: 숲)"
+      },
+      {
+        "key": "날씨",
+        "instruction": "현재 날씨 (예: 맑음, 비)"
+      },
+      {
+        "key": "장면 묘사",
+        "instruction": "현재 상황 1~2문장 묘사"
+      }
+    ],
+    "template": "<div class=\"gb-wrap\"><svg width=\"0\" height=\"0\" style=\"position:absolute\" aria-hidden=\"true\"><filter id=\"gbDuo\" color-interpolation-filters=\"sRGB\"><feColorMatrix type=\"matrix\" values=\"0.299 0.587 0.114 0 0 0.299 0.587 0.114 0 0 0.299 0.587 0.114 0 0 0 0 0 1 0\"/><feComponentTransfer><feFuncR type=\"table\" tableValues=\"0.106 0.839\"/><feFuncG type=\"table\" tableValues=\"0.125 0.859\"/><feFuncB type=\"table\" tableValues=\"0.114 0.831\"/></feComponentTransfer></filter></svg><div class=\"gb-screen hx-scroll\"><div class=\"gb-topbar\"><span>SYS.TERM</span><span>SEC.LVL A</span><span class=\"gb-chip\">LINK OK</span></div><div class=\"gb-subhead\"><span class=\"gb-tag\">[ SUBJECT ]</span><span class=\"gb-name\">{{이름}}</span></div><div class=\"gb-main\"><span class=\"gb-prompt\">&gt;</span> {{속마음}}<span class=\"gb-blink\"></span></div><div class=\"gb-status-sec\"><div class=\"gb-status-head\">[ STATUS ]</div><div class=\"gb-status-grid\"><div class=\"gb-row\"><span class=\"gb-lbl\">RELATION</span><span class=\"gb-val\">{{관계}}</span></div><div class=\"gb-row\"><span class=\"gb-lbl\">AFFECTION</span><span class=\"gb-bar-wrap\"><span class=\"gb-bar\"><span class=\"gb-bar-fill\" style=\"width:{{호감도}}%\"></span></span><span class=\"gb-val\">{{호감도}}%</span></span></div><div class=\"gb-row\"><span class=\"gb-lbl\">MOOD</span><span class=\"gb-val\">{{기분}}</span></div><div class=\"gb-row\"><span class=\"gb-lbl\">ACTION</span><span class=\"gb-val\">{{상태}}</span></div><div class=\"gb-row\"><span class=\"gb-lbl\">OUTFIT</span><span class=\"gb-val\">{{복장}}</span></div></div></div><details class=\"gb-details\"><summary class=\"gb-summary\"><span>POKÉMON PARTY</span><span class=\"gb-fill\"></span><span>▼</span></summary><div class=\"gb-pkmn-list\">{{#포켓몬1스프라이트}}<div class=\"gb-pkmn\"><div class=\"gb-pkmn-spr-col\"><div class=\"gb-pkmn-spr-wrap\"><img class=\"gb-pkmn-spr\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬1스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬1스프라이트}}.png\" alt=\"\">{{#포켓몬1볼스프라이트}}<div class=\"gb-pkmn-ball-badge\"><img class=\"gb-pkmn-ball-spr\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬1볼스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-ball-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬1볼스프라이트}}.png\" alt=\"\"></div>{{/포켓몬1볼스프라이트}}</div><div class=\"gb-pkmn-cap\">{{포켓몬1캡션}}</div></div><div class=\"gb-pkmn-txt\">{{포켓몬1정보}}</div></div>{{/포켓몬1스프라이트}}{{#포켓몬2스프라이트}}<div class=\"gb-pkmn\"><div class=\"gb-pkmn-spr-col\"><div class=\"gb-pkmn-spr-wrap\"><img class=\"gb-pkmn-spr\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬2스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬2스프라이트}}.png\" alt=\"\">{{#포켓몬2볼스프라이트}}<div class=\"gb-pkmn-ball-badge\"><img class=\"gb-pkmn-ball-spr\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬2볼스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-ball-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬2볼스프라이트}}.png\" alt=\"\"></div>{{/포켓몬2볼스프라이트}}</div><div class=\"gb-pkmn-cap\">{{포켓몬2캡션}}</div></div><div class=\"gb-pkmn-txt\">{{포켓몬2정보}}</div></div>{{/포켓몬2스프라이트}}{{#포켓몬3스프라이트}}<div class=\"gb-pkmn\"><div class=\"gb-pkmn-spr-col\"><div class=\"gb-pkmn-spr-wrap\"><img class=\"gb-pkmn-spr\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬3스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬3스프라이트}}.png\" alt=\"\">{{#포켓몬3볼스프라이트}}<div class=\"gb-pkmn-ball-badge\"><img class=\"gb-pkmn-ball-spr\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬3볼스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-ball-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬3볼스프라이트}}.png\" alt=\"\"></div>{{/포켓몬3볼스프라이트}}</div><div class=\"gb-pkmn-cap\">{{포켓몬3캡션}}</div></div><div class=\"gb-pkmn-txt\">{{포켓몬3정보}}</div></div>{{/포켓몬3스프라이트}}{{#포켓몬4스프라이트}}<div class=\"gb-pkmn\"><div class=\"gb-pkmn-spr-col\"><div class=\"gb-pkmn-spr-wrap\"><img class=\"gb-pkmn-spr\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬4스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬4스프라이트}}.png\" alt=\"\">{{#포켓몬4볼스프라이트}}<div class=\"gb-pkmn-ball-badge\"><img class=\"gb-pkmn-ball-spr\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬4볼스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-ball-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬4볼스프라이트}}.png\" alt=\"\"></div>{{/포켓몬4볼스프라이트}}</div><div class=\"gb-pkmn-cap\">{{포켓몬4캡션}}</div></div><div class=\"gb-pkmn-txt\">{{포켓몬4정보}}</div></div>{{/포켓몬4스프라이트}}{{#포켓몬5스프라이트}}<div class=\"gb-pkmn\"><div class=\"gb-pkmn-spr-col\"><div class=\"gb-pkmn-spr-wrap\"><img class=\"gb-pkmn-spr\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬5스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬5스프라이트}}.png\" alt=\"\">{{#포켓몬5볼스프라이트}}<div class=\"gb-pkmn-ball-badge\"><img class=\"gb-pkmn-ball-spr\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬5볼스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-ball-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬5볼스프라이트}}.png\" alt=\"\"></div>{{/포켓몬5볼스프라이트}}</div><div class=\"gb-pkmn-cap\">{{포켓몬5캡션}}</div></div><div class=\"gb-pkmn-txt\">{{포켓몬5정보}}</div></div>{{/포켓몬5스프라이트}}{{#포켓몬6스프라이트}}<div class=\"gb-pkmn\"><div class=\"gb-pkmn-spr-col\"><div class=\"gb-pkmn-spr-wrap\"><img class=\"gb-pkmn-spr\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬6스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/gen5/{{포켓몬6스프라이트}}.png\" alt=\"\">{{#포켓몬6볼스프라이트}}<div class=\"gb-pkmn-ball-badge\"><img class=\"gb-pkmn-ball-spr\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬6볼스프라이트}}.png\" alt=\"\"><img class=\"gb-pkmn-ball-spr-tint\" src=\"https://play.pokemonshowdown.com/sprites/itemicons/{{포켓몬6볼스프라이트}}.png\" alt=\"\"></div>{{/포켓몬6볼스프라이트}}</div><div class=\"gb-pkmn-cap\">{{포켓몬6캡션}}</div></div><div class=\"gb-pkmn-txt\">{{포켓몬6정보}}</div></div>{{/포켓몬6스프라이트}}</div></details><div class=\"gb-foot\">END OF RECORD</div></div></div>",
+    "css": ".gb-wrap{font-family:\"Courier New\",ui-monospace,monospace;width:100%;box-sizing:border-box;background:#2b2d2c;border:1px solid #121413;border-radius:2px;padding:9px;overflow-wrap:break-word;word-break:keep-all;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);}.gb-screen{background:#cdd1cb;background-image:radial-gradient(rgba(27,32,29,0.13) 0.6px,transparent 0.7px);background-size:4px 4px;border:2px solid #1b201d;box-shadow:inset 0 0 12px rgba(27,32,29,0.28),0 0 0 1px #4d544f;padding:8px;overflow-y:scroll !important;overflow-x:hidden !important;scrollbar-gutter:stable;box-sizing:border-box;scrollbar-color:#1b201d #b3b8b1 !important;scrollbar-width:thin !important;color:#1b201d;}.gb-screen::-webkit-scrollbar,.hx-scroll::-webkit-scrollbar{width:6px !important;height:6px !important;}.gb-screen::-webkit-scrollbar-track,.hx-scroll::-webkit-scrollbar-track{background:#b3b8b1 !important;}.gb-screen::-webkit-scrollbar-thumb,.hx-scroll::-webkit-scrollbar-thumb{background:#1b201d !important;}.gb-screen::-webkit-scrollbar-thumb:hover,.hx-scroll::-webkit-scrollbar-thumb:hover{background:#3a403c !important;}.gb-topbar{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:1.5px;font-weight:700;color:#4d544f;border-bottom:1px solid #1b201d;padding-bottom:4px;}.gb-prompt{font-weight:700;}@keyframes blink{50%{opacity:0;}}.gb-blink{animation:blink 1s step-end infinite;display:inline-block;width:6px;height:11px;background:#1b201d;vertical-align:middle;margin-left:3px;}.gb-screen{max-height:420px;}.gb-subhead{display:flex;align-items:center;gap:8px;border-top:3px double #1b201d;border-bottom:3px double #1b201d;padding:5px 2px;margin:7px 0 4px;font-size:12px;font-weight:700;}.gb-tag{font-size:10px;letter-spacing:1.5px;color:#4d544f;flex:none;}.gb-name{word-break:break-all;letter-spacing:0.5px;}.gb-main{background:#1b201d;color:#dfe3dd;padding:8px 9px;margin:6px 0 9px;font-size:11px;line-height:1.7;font-weight:700;}.gb-main .gb-blink{background:#dfe3dd;}.gb-main .gb-prompt{color:#9aa19c;}.gb-status-sec{position:relative;border:1px solid #1b201d;padding:8px;margin-top:2px;}.gb-status-sec::before,.gb-status-sec::after{content:\"\";position:absolute;width:9px;height:9px;border:3px solid #1b201d;}.gb-status-sec::before{top:-2px;left:-2px;border-right:0;border-bottom:0;}.gb-status-sec::after{bottom:-2px;right:-2px;border-left:0;border-top:0;}.gb-status-head{display:flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:2px;margin-bottom:5px;}.gb-status-head::after{content:\"\";flex:1;border-top:1px solid #1b201d;margin-left:6px;}.gb-status-grid{display:flex;flex-direction:column;}.gb-row{display:flex;align-items:flex-start;font-size:11.5px;line-height:1.4;gap:6px;padding:4px 0;border-bottom:1px solid #aab0a8;}.gb-row:last-child{border-bottom:0;}.gb-lbl{color:#4d544f;font-weight:700;font-size:10px;letter-spacing:0.5px;width:92px;flex:none;padding-top:1px;white-space:nowrap;}.gb-lbl::before{content:\">> \";}.gb-val{font-weight:700;text-align:right;margin-left:auto;}.gb-bar-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;}.gb-bar{width:60px;height:8px;border:1px solid #1b201d;background:#b3b8b1;overflow:hidden;box-sizing:content-box;}.gb-bar-fill{display:block;height:100%;background:repeating-linear-gradient(90deg,#1b201d 0 4px,transparent 4px 6px);}.gb-foot{margin-top:9px;text-align:center;font-size:9px;letter-spacing:2px;color:#7b837d;font-weight:700;}.gb-foot::before{content:\"//// \";}.gb-foot::after{content:\" ////\";}.gb-details{margin-top:8px;}.gb-summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;outline:none;border:1px solid #1b201d;padding:4px 7px;font-size:10.5px;letter-spacing:1.5px;font-weight:700;}.gb-summary::before{content:\"[+]\";}.gb-summary::-webkit-details-marker{display:none;}.gb-fill{flex:1;}.gb-pkmn-list{border:1px solid #1b201d;border-top:0;padding:6px;display:flex;flex-direction:column;gap:5px;}.gb-pkmn{border-left:3px solid #1b201d;background:rgba(27,32,29,0.07);padding:5px 8px;font-size:10.5px;line-height:1.5;word-break:break-all;}.gb-pkmn:empty{display:none;}.gb-chip{background:#1b201d;color:#dfe3dd;padding:1px 6px;letter-spacing:1px;}.gb-summary span:last-child{display:none;}.gb-pkmn-list{background:rgba(27,32,29,0.05);}.gb-pkmn{display:flex;align-items:flex-start;gap:8px;word-break:normal;}.gb-pkmn-list{display:grid;grid-template-columns:1fr;gap:6px;}.gb-pkmn-list:empty{display:none;}.gb-pkmn-txt{flex:1;min-width:0;font-size:10.5px;line-height:1.5;color:#1b201d;word-break:break-all;}.gb-pkmn-txt .us-vline:first-child{color:#4d544f;font-weight:700;}.gb-pkmn-spr-col{display:flex;flex-direction:column;align-items:center;flex:none;gap:3px;}.gb-pkmn-spr-wrap{position:relative;width:96px;height:96px;flex:none;background:#b3b8b1;border:1px solid #1b201d;overflow:hidden;}.gb-pkmn-cap{text-align:center;width:96px;word-break:break-word;font-size:8px;color:#7b837d;line-height:1.35;}.gb-pkmn-cap .us-vline:first-child{font-size:9px;font-weight:700;color:#1b201d;}.gb-pkmn-spr,.gb-pkmn-spr-tint{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;}.gb-pkmn-spr{filter:url(#gbDuo);}.gb-pkmn-spr-tint{mix-blend-mode:color;opacity:.3;pointer-events:none;}.gb-pkmn-ball-badge{position:absolute;right:2px;bottom:2px;width:26px;height:26px;background:#dfe3dd;border:1px solid #1b201d;border-radius:50%;overflow:hidden;z-index:1;}.gb-pkmn-ball-spr,.gb-pkmn-ball-spr-tint{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;}.gb-pkmn-ball-spr{filter:url(#gbDuo);}.gb-pkmn-ball-spr-tint{mix-blend-mode:color;opacity:.3;pointer-events:none;}::selection{background:#1b201d;color:#dfe3dd;}.gb-main ::selection,.gb-main::selection,.gb-scene-body ::selection,.gb-scene-body::selection,.gb-summary ::selection,.gb-summary::selection{background:#dfe3dd;color:#1b201d;}",
+    "sceneTemplate": "<div class=\"gb-wrap\"><div class=\"gb-screen gb-scene-screen hx-scroll\"><div class=\"gb-topbar\"><span>FIELD.LOG</span><span class=\"gb-chip\">REC ●</span></div><div class=\"gb-scene-head\"><span class=\"gb-scene-item\"><b>LOC</b>{{장소}}</span><span class=\"gb-scene-item\"><b>WEA</b>{{날씨}}</span><span class=\"gb-scene-item\"><b>TIME</b>{{시간}}</span></div><div class=\"gb-scene-body\"><span class=\"gb-prompt\">&gt;</span> {{장면 묘사}}<span class=\"gb-blink\"></span></div></div></div>",
+    "sceneCss": ".gb-wrap{font-family:\"Courier New\",ui-monospace,monospace;width:100%;box-sizing:border-box;background:#2b2d2c;border:1px solid #121413;border-radius:2px;padding:9px;overflow-wrap:break-word;word-break:keep-all;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);}.gb-screen{background:#cdd1cb;background-image:radial-gradient(rgba(27,32,29,0.13) 0.6px,transparent 0.7px);background-size:4px 4px;border:2px solid #1b201d;box-shadow:inset 0 0 12px rgba(27,32,29,0.28),0 0 0 1px #4d544f;padding:8px;overflow-y:scroll !important;overflow-x:hidden !important;scrollbar-gutter:stable;box-sizing:border-box;scrollbar-color:#1b201d #b3b8b1 !important;scrollbar-width:thin !important;color:#1b201d;}.gb-screen::-webkit-scrollbar,.hx-scroll::-webkit-scrollbar{width:6px !important;height:6px !important;}.gb-screen::-webkit-scrollbar-track,.hx-scroll::-webkit-scrollbar-track{background:#b3b8b1 !important;}.gb-screen::-webkit-scrollbar-thumb,.hx-scroll::-webkit-scrollbar-thumb{background:#1b201d !important;}.gb-screen::-webkit-scrollbar-thumb:hover,.hx-scroll::-webkit-scrollbar-thumb:hover{background:#3a403c !important;}.gb-topbar{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:1.5px;font-weight:700;color:#4d544f;border-bottom:1px solid #1b201d;padding-bottom:4px;}.gb-prompt{font-weight:700;}@keyframes blink{50%{opacity:0;}}.gb-blink{animation:blink 1s step-end infinite;display:inline-block;width:6px;height:11px;background:#1b201d;vertical-align:middle;margin-left:3px;}.gb-screen{max-height:250px;}.gb-scene-head{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid #1b201d;margin:7px 0 6px;font-size:11px;font-weight:700;}.gb-scene-item{display:flex;flex-direction:column;gap:2px;padding:4px 6px;border-right:1px solid #1b201d;word-break:break-all;line-height:1.4;}.gb-scene-item:last-child{border-right:0;}.gb-scene-item b{font-size:9px;letter-spacing:1.5px;color:#4d544f;}.gb-scene-body{background:#1b201d;color:#dfe3dd;line-height:1.7;font-size:11px;padding:8px 9px;}.gb-scene-body .gb-blink{background:#dfe3dd;}.gb-scene-body .gb-prompt{color:#9aa19c;}.gb-chip{background:#1b201d;color:#dfe3dd;padding:1px 6px;letter-spacing:1px;}::selection{background:#1b201d;color:#dfe3dd;}.gb-main ::selection,.gb-main::selection,.gb-scene-body ::selection,.gb-scene-body::selection,.gb-summary ::selection,.gb-summary::selection{background:#dfe3dd;color:#1b201d;}",
+    "tabTemplate": "{{이름}}",
+    "tabCss": "",
+    "sceneButtonTemplate": "MAP",
+    "sceneButtonCss": "",
+    "sceneDefaultCollapsed": false,
+    "charCollapseMode": "global",
+    "charFieldsBackup": [],
+    "valueLineBreaks": "div",
+    "valueHtml": false,
+    "instructions": "=== [필독] 다인챗(Multi-NPC) 및 실시간 연속성 유지 규칙 ===\n0. [언어] 모든 값은 한국어로 작성하십시오. 캐릭터 카드나 대화가 영어로 되어 있어도 상태창 값은 한국어로 옮겨 적습니다. 예외는 영문 슬러그 전용 필드(포켓몬N스프라이트, 포켓몬N볼스프라이트)뿐이며, 포켓몬·기술·지명 등의 고유명사는 한국어 정식 명칭을 사용합니다.\n1. 캐릭터 유지 (No Drop): 직전 상태창에 등장했던 모든 캐릭터({{char}}, {{user}} 및 서브 NPC)는 서사에서 영구적으로 퇴장(사망, 완전한 이탈 등)하지 않는 한 절대 누락하지 말고 각자의 탭에 출력하십시오.\n2. 화면 밖 자율성 (Off-screen Autonomy): 현재 장면에 없는 캐릭터의 시간은 멈추지 않습니다. 대화에 없더라도 탭을 방치하지 말고, 캐릭터의 성격 및 일과, 시간 경과를 바탕으로 '지금쯤 어디서 무엇을 하고 있을지' 추론하여 현재 장소와 행동을 업데이트하십시오. 단, 관계, 호감도, 소지품 등 장기적인 사실 데이터는 서사적 이유 없이 임의로 바꾸지 마십시오.\n3. [★중요] 동적 필드 복붙 금지 (No Verbatim): '속마음', '기분', '상태(행동)' 같은 텍스트 필드를 직전 상태창에서 그대로 복사/붙여넣기 하는 것을 엄격히 금지합니다. 캐릭터가 화면 안에 있든 밖에 있든, 턴이 지날 때마다 항상 현재 상황과 심리에 맞게 완전히 새로운 문장으로 갱신하십시오. 절대 이전 문장과 같은걸 넣지 않습니다.\n4. [복장] '복장'은 서사를 따라가는 기록 필드입니다. 다음 중 하나라도 일어나면 반드시 갱신하십시오: 옷을 갈아입음 / 겉옷·모자·장갑 등을 걸치거나 벗음 / 비·물·전투로 젖거나 찢어지거나 더러워짐 / 복장이 흐트러지거나 정돈됨 / 목욕·수면 등으로 옷 상태가 달라짐. 반대로 이런 일이 전혀 없었다면 직전 값을 그대로 유지하고 새로 지어내지 마십시오. 제복·근무복처럼 상황상 계속 같은 옷이면 같은 값을 유지하되, 위 변화가 생기면 그때는 반영합니다.\n5. 자연스러운 변화: 호감도 같은 수치는 한 번에 크게 튀지 않도록 점진적으로 변화시키십시오. 장면 필드(시간/장소/날씨)는 이야기 내에서 명시적인 변화가 일어났을 때만 업데이트하며, 비어 있는 값이 있다면 맥락을 통해 가장 합리적인 값을 추론하여 채우십시오.\n\n=== [포켓몬 슬롯] 필드 규칙 ===\n슬롯 1~6, 각 4개 필드. 슬롯 순서를 바꾸지 말 것.\n\n■ 빈 슬롯 처리 (출력량 절약 — 반드시 지킬 것)\n포켓몬이 없는 슬롯은 그 슬롯의 4개 키를 JSON에서 통째로 빼십시오. 빈 문자열도, '-'도, 키 자체도 쓰지 마십시오. 예: 포켓몬을 1마리만 가진 트레이너는 포켓몬1* 4개만 출력하고 포켓몬2~6 관련 키는 하나도 적지 않습니다.\n\n■ 포켓몬N스프라이트 — 종 슬러그\n기본형: 영문 종 이름 소문자, 공백·아포스트로피·마침표·하이픈 제거해 붙여씀 (Charizard→charizard, Mr. Mime→mrmime, Farfetch'd→farfetchd, Ho-Oh→hooh, Type: Null→typenull, Porygon-Z→porygonz, Great Tusk→greattusk, Iron Hands→ironhands).\n폼이 있으면 <기본형>-<폼> 으로 하이픈 하나, 폼 이름은 붙여씀:\n  지역폼 -alola/-galar/-hisui/-paldea → darmanitan-galar, ninetales-alola, zoroark-hisui, wooper-paldea\n  메가 -mega, X/Y는 -megax/-megay → lucario-mega, charizard-megax   거다이맥스 -gmax\n  기타 → lycanroc-midnight, lycanroc-dusk, necrozma-duskmane, urshifu-rapidstrike, rotom-wash, landorus-therian, kyurem-black, giratina-origin, zacian-crowned, darmanitan-galarzen, arceus-fire\n니드런은 nidoranf / nidoranm. 암수 외형이 다른 종의 암컷은 -f (meowstic-f 등), 확실치 않으면 붙이지 말 것. 폼을 확신 못 하면 기본형으로.\n\n■ 포켓몬N볼스프라이트 — 볼 슬러그\n소문자, 단어 사이 하이픈, 끝에 -ball: poke-ball, great-ball, ultra-ball, premier-ball, luxury-ball, dusk-ball, heavy-ball, heal-ball, dive-ball, net-ball, timer-ball, repeat-ball, nest-ball, quick-ball, love-ball, friend-ball, moon-ball, dream-ball, beast-ball, safari-ball, master-ball\n\n■ 포켓몬N캡션 — 정확히 3줄, 줄 사이 빈 줄 없이, 라벨 없이\n1줄 이름(성별). 성별이 있는 종만 괄호로 (♂)/(♀)를 붙인다 — 예: 초염몽(♂), 밀로틱(♀).\n   ★성별 개념이 없는 종(메타그로스·포리곤·레지스틸 같은 무성별 종, 대부분의 전설·환상 포켓몬)은 괄호를 아예 쓰지 말고 이름만 적는다. 빈 괄호 ()나 (무성별) 같은 표기도 금지. 예: 메타그로스\n2줄 <볼 이름> (<볼 안/밖>)   예: 몬스터볼 (볼 밖)\n3줄 타고난 성격 1~3개, 쉼표 구분   예: 다혈질, 호전적\n\n■ 포켓몬N정보 — 줄 사이 빈 줄 없이, 라벨 없이\n1줄 <현재 기분> <얼굴>   예: 들뜸 (^▽^)\n2줄 현재 행동/상태 한 문장\n3줄부터 기술 한 줄에 하나씩, 앞에 '▶ '. 최대 4개, 있는 만큼만\n2줄은 '볼 안에서 대기 중'처럼 매번 같은 문장 금지. 성격·기분·장면에 맞춰 매 턴 다르게 쓰고, 슬롯끼리도 서로 다른 문장이어야 한다.\n\n■ 고정값 vs 변동값\n고정(직전 값을 그대로 옮겨 적는 것이 정답, 새로 지어내지 말 것): 종·성별·볼 종류·성격·기술 목록과 순서.\n  종은 진화 장면, 볼은 교체 장면, 기술은 배우기·잊기 장면이 실제로 나왔을 때만 변경. 이번 턴에 기술을 안 썼다는 이유로 바꾸지 말 것.\n변동(매 턴 갱신): 기분, 현재 행동, 볼 안/밖 표기.\n직전 상태창에 있던 슬롯은 이번 턴에 포켓몬이 등장하지 않았어도 절대 지우지 말 것.\n\n* 출력 예시 (초염몽 슬롯)\n포켓몬1스프라이트: infernape\n포켓몬1볼스프라이트: poke-ball\n포켓몬1캡션: 초염몽(♂)\\n몬스터볼 (볼 밖)\\n다혈질, 호전적\n포켓몬1정보: 불만 섞임 (¬_¬)\\n상체를 낮추고 주먹을 내민 채 기다리는 중\\n▶ 화염방사\\n▶ 마하펀치\\n▶ 인파이트\\n▶ 플레어드라이브\n\n=== 기분 얼굴 규칙 (정보 필드 1줄 전용) ===\n기분 단어 뒤, 줄 맨 끝에 텍스트 얼굴 하나를 붙인다. 정해진 목록은 없으며, 그 기분에 맞는 얼굴을 매번 직접 조합한다.\n\n[반드시 지킬 것]\n1. 반드시 소괄호로 감싸고, 괄호 포함 3~8자 이내로 짧게.\n2. 아래 허용 문자만 사용한다. 목록 밖 문자는 카드 폰트(Courier New)에 없어 그 글자만 다른 폰트로 대체되어 크기·모양이 어긋나 보인다.\n   허용: 영문 대소문자, 숫자, ( ) _ - . , ; : ' \" ` ´ ^ ~ > < = + * / \\ | ? ! @ # $ % & 와 · ¬ ▽ ° Ò Ó д\n3. 절대 금지: 컬러 이모지(😀 🥰 등), 전각 문자(・ ｡ ﾟ ﾉ ヽ 등), 결합 악센트가 붙은 문자(•̀ ᴗ 등), 괄호를 여러 겹 쓰거나 팔·손 장식을 붙이는 긴 카오모지.\n4. 얼굴은 기분을 보조하는 표시일 뿐이다. 얼굴을 만들기 어렵다고 기분 단어를 바꾸지 말 것.\n\n[조합 방법]\n눈 예: ^ · o O ; > < T u = - ~ ` ´ Ò Ó ?\n입 예: _ ▽ o 3 u ~ . , w O <\n곁들임: 볼의 홍조는 // //, 식은땀은 ; , 졸음은 zZ, 화난 입은 д\n왼쪽 눈과 오른쪽 눈을 다르게 써서 윙크·비웃음도 표현할 수 있다.\n\n[예시 — 이대로만 쓰라는 뜻이 아니라 감을 잡기 위한 것]\n기쁨 (^▽^) / 흐뭇 (^_^) / 환호 (^o^) / 어리광 (^3^) / 수줍음 (//_//) / 장난기 (^_~) / 평온 (·u·) / 졸림 (-_-)zZ / 지침 (~_~) / 따분함 (=_=) / 못마땅 (¬_¬) / 호기심 (o_o) / 경악 (O_O) / 어리둥절 (?_?) / 긴장 (·_·;) / 질색 (>_<) / 울먹임 (;_;) / 상심 (T_T) / 분노 (`д´) / 투지 (Ò_Ó)\n\n예) '지금 당장 뛰쳐나가고 싶어 안달' → 안달남 (>u<)\n예) '주인이 자기를 못 알아본 게 서운' → 시무룩함 (;_;)\n예) '반쯤 졸면서도 경계는 놓지 않음' → 몽롱한 경계 (-_-;)",
+    "windowCss": "#us-float, #us-prompt-bubble-window, .us-box, .hx-scroll {\n  --us-float-bg: #2b2d2c;\n  --us-float-fg: #dfe3dd;\n  --us-float-border: #121413;\n  --us-float-muted: #7b837d;\n  --us-float-primary: #dfe3dd;\n  --us-float-primary-fg: #1b201d;\n  --us-float-secondary: #1b201d;\n  --us-float-accent: #3a403c;\n  scrollbar-color: #7b837d #1b201d !important;\n  scrollbar-width: thin !important;\n}\n#us-float .us-f-title, #us-float .us-tab, #us-float .us-scene-button {\n  font-family: 'Courier New', ui-monospace, monospace;\n}\n#us-float .us-tab {\n  border-radius: 0 !important;\n  padding: 4px 12px !important;\n  margin: 0 2px !important;\n}\n#us-float .us-scene-button {\n  border-radius: 0 !important;\n}\n#us-float ::-webkit-scrollbar, .us-box ::-webkit-scrollbar, .hx-scroll::-webkit-scrollbar, .hx-scroll ::-webkit-scrollbar {\n  width: 6px !important;\n  height: 6px !important;\n}\n#us-float ::-webkit-scrollbar-track, .us-box ::-webkit-scrollbar-track, .hx-scroll::-webkit-scrollbar-track, .hx-scroll ::-webkit-scrollbar-track {\n  background: #1b201d !important;\n}\n#us-float ::-webkit-scrollbar-thumb, .us-box ::-webkit-scrollbar-thumb, .hx-scroll::-webkit-scrollbar-thumb, .hx-scroll ::-webkit-scrollbar-thumb {\n  background: #7b837d !important;\n  border-radius: 3px !important;\n}\n#us-float ::-webkit-scrollbar-thumb:hover, .us-box ::-webkit-scrollbar-thumb:hover, .hx-scroll::-webkit-scrollbar-thumb:hover, .hx-scroll ::-webkit-scrollbar-thumb:hover {\n  background: #dfe3dd !important;\n}",
+    "windowCssMode": "custom"
+  }
+}

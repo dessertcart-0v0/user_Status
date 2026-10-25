@@ -1,0 +1,104 @@
+{
+  "type": "marinara-user-status-item",
+  "version": 1,
+  "exportedAt": "2026-10-22T06:51:03.566Z",
+  "status": {
+    "id": "us-mudo318mjgsit",
+    "name": "🎮 포켓 게임기",
+    "description": "흑녹색 옛 휴대용 게임기 단말\n인물: 등장 여부 · 관계 · 호감도(게이지) · 기분 · 위치 · 자세 · 복장 · 상태 · 속마음\n접는 칸: 목표 · 진행 · 약속 · 오늘 기록\n장면: 시간 · 장소 · 날씨 · 장면 묘사\n화면 밖 인물도 지금쯤 뭘 하는지 매 턴 갱신",
+    "fields": [
+      {
+        "key": "이름",
+        "instruction": "현재 탭 캐릭터의 이름 (절대 누락 금지)"
+      },
+      {
+        "key": "등장",
+        "instruction": "현재 장면에 함께 있으면 ON-SCENE, 없으면 OFF-SCENE (둘 중 하나만 출력)"
+      },
+      {
+        "key": "관계",
+        "instruction": "상대와의 관계를 '한 단어 | 한 문장' 형식으로 (예: 소꿉친구 | 요즘 괜히 신경 쓰이는 사이)"
+      },
+      {
+        "key": "호감도",
+        "instruction": "호감도 (0~100 숫자만)"
+      },
+      {
+        "key": "기분",
+        "instruction": "현재 기분을 한 단어로 (예: 들뜸, 차분함)"
+      },
+      {
+        "key": "위치",
+        "instruction": "캐릭터가 실제로 있는 구체적 위치. 장면 장소와 달라도 됨. 장면 밖이면 시간 경과와 목표로 추론 (예: 본관 3층 복도)"
+      },
+      {
+        "key": "자세",
+        "instruction": "현재 자세와 몸의 상태를 짧게 (예: 벽에 기댄 채 팔짱, 서류를 안고 빠른 걸음)"
+      },
+      {
+        "key": "복장",
+        "instruction": "현재 입고 있는 옷과 눈에 띄는 외형을 짧게 (예: 흰 셔츠에 남색 가디건, 머리를 하나로 묶음)"
+      },
+      {
+        "key": "상태",
+        "instruction": "대상의 현재 행동 (예: 배낭을 정리하는 중)"
+      },
+      {
+        "key": "목표",
+        "instruction": "캐릭터가 지금 이루려는 단기 목표 1개 (예: 오후 2시 세미나 참석). 달성·포기·중단 전까지 유지"
+      },
+      {
+        "key": "진행",
+        "instruction": "목표의 진행 단계를 '지난 단계 → [현재 단계] → 다음 단계' 형식으로 (예: 자료 출력 완료 → [세미나실로 이동 중] → 발표 순서 대기)"
+      },
+      {
+        "key": "약속",
+        "instruction": "앞으로 예정된 약속·일정을 '날짜/시간 내용' 형식으로. 여러 개면 ' / '로 구분, 없으면 '없음' (예: 9/27(일) 저녁 7시 영화 / 9/30(수) 과제 마감)"
+      },
+      {
+        "key": "오늘",
+        "instruction": "오늘 한 일을 시간순으로 누적 기록 (예: 09:00 출근 → 12:00 점심 → 14:00 세미나). 날짜가 바뀌면 비우고 새로 시작"
+      },
+      {
+        "key": "속마음",
+        "instruction": "현재 상황에 대한 내면 독백 1문장 ({{user}}는 생략)"
+      }
+    ],
+    "folds": [],
+    "sceneFolds": [],
+    "sceneFields": [
+      {
+        "key": "시간",
+        "instruction": "현재 날짜(월/일, 요일)와 시각 (예: 9/25(금) 오후 3시)"
+      },
+      {
+        "key": "장소",
+        "instruction": "현재 위치 (예: 숲)"
+      },
+      {
+        "key": "날씨",
+        "instruction": "현재 날씨 (예: 맑음, 비)"
+      },
+      {
+        "key": "장면 묘사",
+        "instruction": "현재 상황과 주변 풍경·배경을 1~2문장으로 묘사"
+      }
+    ],
+    "template": "<div class=\"gb-wrap\"><div class=\"gb-screen hx-scroll\"><div class=\"gb-topbar\"><span>SYS.TERM</span><span>SEC.LVL A</span><span class=\"gb-chip\">{{등장}}</span></div><div class=\"gb-subhead\"><span class=\"gb-tag\">[ SUBJECT ]</span><span class=\"gb-name\">{{이름}}</span></div><div class=\"gb-main\"><span class=\"gb-prompt\">&gt;</span> {{속마음}}<span class=\"gb-blink\"></span></div><div class=\"gb-status-sec\"><div class=\"gb-status-head\">[ STATUS ]</div><div class=\"gb-status-grid\"><div class=\"gb-row\"><span class=\"gb-lbl\">RELATION</span><span class=\"gb-val\">{{관계}}</span></div><div class=\"gb-row\"><span class=\"gb-lbl\">AFFECTION</span><span class=\"gb-bar-wrap\"><span class=\"gb-bar\"><span class=\"gb-bar-fill\" style=\"width:{{호감도}}%\"></span></span><span class=\"gb-val\">{{호감도}}%</span></span></div><div class=\"gb-row\"><span class=\"gb-lbl\">MOOD</span><span class=\"gb-val\">{{기분}}</span></div><div class=\"gb-row\"><span class=\"gb-lbl\">LOCATION</span><span class=\"gb-val\">{{위치}}</span></div><div class=\"gb-row\"><span class=\"gb-lbl\">POSTURE</span><span class=\"gb-val\">{{자세}}</span></div><div class=\"gb-row\"><span class=\"gb-lbl\">OUTFIT</span><span class=\"gb-val\">{{복장}}</span></div><div class=\"gb-row\"><span class=\"gb-lbl\">ACTION</span><span class=\"gb-val\">{{상태}}</span></div></div></div><details class=\"gb-obj-sec\"><summary class=\"gb-status-head gb-obj-sum\">[ OBJECTIVE ]</summary><div class=\"gb-obj-goal\"><span class=\"gb-prompt\">&gt;&gt;</span> {{목표}}</div><div class=\"gb-obj-prog\">{{진행}}</div><div class=\"gb-obj-item\"><span class=\"gb-lbl\">RESERVED</span><span class=\"gb-obj-txt\">{{약속}}</span></div><div class=\"gb-obj-item\"><span class=\"gb-lbl\">TODAY.LOG</span><span class=\"gb-obj-txt\">{{오늘}}</span></div></details><div class=\"gb-foot\">END OF RECORD</div></div></div>",
+    "css": ".gb-wrap{font-family:\"Courier New\",ui-monospace,monospace;width:100%;box-sizing:border-box;background:#2b2d2c;border:1px solid #121413;border-radius:2px;padding:9px;overflow-wrap:break-word;word-break:keep-all;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);}.gb-screen{background:#cdd1cb;background-image:radial-gradient(rgba(27,32,29,0.13) 0.6px,transparent 0.7px);background-size:4px 4px;border:2px solid #1b201d;box-shadow:inset 0 0 12px rgba(27,32,29,0.28),0 0 0 1px #4d544f;padding:8px;overflow-y:scroll !important;overflow-x:hidden !important;scrollbar-gutter:stable;box-sizing:border-box;scrollbar-color:#1b201d #b3b8b1 !important;scrollbar-width:thin !important;color:#1b201d;}.gb-screen::-webkit-scrollbar,.hx-scroll::-webkit-scrollbar{width:6px !important;height:6px !important;}.gb-screen::-webkit-scrollbar-track,.hx-scroll::-webkit-scrollbar-track{background:#b3b8b1 !important;}.gb-screen::-webkit-scrollbar-thumb,.hx-scroll::-webkit-scrollbar-thumb{background:#1b201d !important;}.gb-screen::-webkit-scrollbar-thumb:hover,.hx-scroll::-webkit-scrollbar-thumb:hover{background:#3a403c !important;}.gb-topbar{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:1.5px;font-weight:700;color:#4d544f;border-bottom:1px solid #1b201d;padding-bottom:4px;}.gb-prompt{font-weight:700;}@keyframes blink{50%{opacity:0;}}.gb-blink{animation:blink 1s step-end infinite;display:inline-block;width:6px;height:11px;background:#1b201d;vertical-align:middle;margin-left:3px;}.gb-screen{max-height:480px;}.gb-subhead{display:flex;align-items:center;gap:8px;border-top:3px double #1b201d;border-bottom:3px double #1b201d;padding:5px 2px;margin:7px 0 4px;font-size:12px;font-weight:700;}.gb-tag{font-size:10px;letter-spacing:1.5px;color:#4d544f;flex:none;}.gb-name{word-break:break-all;letter-spacing:0.5px;}.gb-main{background:#1b201d;color:#dfe3dd;padding:8px 9px;margin:6px 0 9px;font-size:11px;line-height:1.7;font-weight:700;}.gb-main .gb-blink{background:#dfe3dd;}.gb-main .gb-prompt{color:#9aa19c;}.gb-status-sec{position:relative;border:1px solid #1b201d;padding:8px;margin-top:2px;}.gb-status-sec::before,.gb-status-sec::after{content:\"\";position:absolute;width:9px;height:9px;border:3px solid #1b201d;}.gb-status-sec::before{top:-2px;left:-2px;border-right:0;border-bottom:0;}.gb-status-sec::after{bottom:-2px;right:-2px;border-left:0;border-top:0;}.gb-status-head{display:flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:2px;margin-bottom:5px;}.gb-status-head::after{content:\"\";flex:1;border-top:1px solid #1b201d;margin-left:6px;}.gb-status-grid{display:flex;flex-direction:column;}.gb-row{display:flex;align-items:flex-start;font-size:11.5px;line-height:1.4;gap:6px;padding:4px 0;border-bottom:1px solid #aab0a8;}.gb-row:last-child{border-bottom:0;}.gb-lbl{color:#4d544f;font-weight:700;font-size:10px;letter-spacing:0.5px;width:92px;flex:none;padding-top:1px;white-space:nowrap;}.gb-lbl::before{content:\">> \";}.gb-val{font-weight:700;text-align:right;margin-left:auto;}.gb-bar-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;}.gb-bar{width:60px;height:8px;border:1px solid #1b201d;background:#b3b8b1;overflow:hidden;box-sizing:content-box;}.gb-bar-fill{display:block;height:100%;background:repeating-linear-gradient(90deg,#1b201d 0 4px,transparent 4px 6px);}.gb-foot{margin-top:9px;text-align:center;font-size:9px;letter-spacing:2px;color:#7b837d;font-weight:700;}.gb-foot::before{content:\"//// \";}.gb-foot::after{content:\" ////\";}.gb-chip{background:#1b201d;color:#dfe3dd;padding:1px 6px;letter-spacing:1px;}::selection{background:#1b201d;color:#dfe3dd;}.gb-main ::selection,.gb-main::selection,.gb-scene-body ::selection,.gb-scene-body::selection,.gb-summary ::selection,.gb-summary::selection,.gb-obj-prog ::selection,.gb-obj-prog::selection{background:#dfe3dd;color:#1b201d;}.gb-obj-sec{border:1px solid #1b201d;padding:8px;margin-top:9px;}.gb-obj-goal{font-size:11.5px;font-weight:700;line-height:1.5;}.gb-obj-goal .gb-prompt{color:#4d544f;}.gb-obj-prog{margin-top:6px;background:#1b201d;color:#dfe3dd;border-left:4px solid #7b837d;padding:5px 7px;font-size:10.5px;font-weight:700;line-height:1.6;letter-spacing:0.3px;}.gb-obj-item{margin-top:7px;padding-top:6px;border-top:1px solid #aab0a8;}.gb-obj-item .gb-lbl{display:block;width:auto;margin-bottom:2px;}.gb-obj-txt{display:block;font-size:11px;font-weight:700;line-height:1.6;}.gb-obj-sum{cursor:pointer;list-style:none;user-select:none;margin-bottom:0;}.gb-obj-sum::-webkit-details-marker{display:none;}.gb-obj-sum::marker{content:\"\";}.gb-obj-sum::before{content:\"[+] \";color:#4d544f;margin-right:2px;}.gb-obj-sec[open] > .gb-obj-sum{margin-bottom:5px;}.gb-obj-sec[open] > .gb-obj-sum::before{content:\"[-] \";}.gb-obj-sum:hover{color:#4d544f;}",
+    "sceneTemplate": "<div class=\"gb-wrap\"><div class=\"gb-screen gb-scene-screen hx-scroll\"><div class=\"gb-topbar\"><span>FIELD.LOG</span><span class=\"gb-chip\">REC ●</span></div><div class=\"gb-scene-head\"><span class=\"gb-scene-item\"><b>LOC</b>{{장소}}</span><span class=\"gb-scene-item\"><b>WEA</b>{{날씨}}</span><span class=\"gb-scene-item\"><b>TIME</b>{{시간}}</span></div><div class=\"gb-scene-body\"><span class=\"gb-prompt\">&gt;</span> {{장면 묘사}}<span class=\"gb-blink\"></span></div></div></div>",
+    "sceneCss": ".gb-wrap{font-family:\"Courier New\",ui-monospace,monospace;width:100%;box-sizing:border-box;background:#2b2d2c;border:1px solid #121413;border-radius:2px;padding:9px;overflow-wrap:break-word;word-break:keep-all;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);}.gb-screen{background:#cdd1cb;background-image:radial-gradient(rgba(27,32,29,0.13) 0.6px,transparent 0.7px);background-size:4px 4px;border:2px solid #1b201d;box-shadow:inset 0 0 12px rgba(27,32,29,0.28),0 0 0 1px #4d544f;padding:8px;overflow-y:scroll !important;overflow-x:hidden !important;scrollbar-gutter:stable;box-sizing:border-box;scrollbar-color:#1b201d #b3b8b1 !important;scrollbar-width:thin !important;color:#1b201d;}.gb-screen::-webkit-scrollbar,.hx-scroll::-webkit-scrollbar{width:6px !important;height:6px !important;}.gb-screen::-webkit-scrollbar-track,.hx-scroll::-webkit-scrollbar-track{background:#b3b8b1 !important;}.gb-screen::-webkit-scrollbar-thumb,.hx-scroll::-webkit-scrollbar-thumb{background:#1b201d !important;}.gb-screen::-webkit-scrollbar-thumb:hover,.hx-scroll::-webkit-scrollbar-thumb:hover{background:#3a403c !important;}.gb-topbar{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:1.5px;font-weight:700;color:#4d544f;border-bottom:1px solid #1b201d;padding-bottom:4px;}.gb-prompt{font-weight:700;}@keyframes blink{50%{opacity:0;}}.gb-blink{animation:blink 1s step-end infinite;display:inline-block;width:6px;height:11px;background:#1b201d;vertical-align:middle;margin-left:3px;}.gb-screen{max-height:250px;}.gb-scene-head{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid #1b201d;margin:7px 0 6px;font-size:11px;font-weight:700;}.gb-scene-item{display:flex;flex-direction:column;gap:2px;padding:4px 6px;border-right:1px solid #1b201d;word-break:break-all;line-height:1.4;}.gb-scene-item:last-child{border-right:0;}.gb-scene-item b{font-size:9px;letter-spacing:1.5px;color:#4d544f;}.gb-scene-body{background:#1b201d;color:#dfe3dd;line-height:1.7;font-size:11px;padding:8px 9px;}.gb-scene-body .gb-blink{background:#dfe3dd;}.gb-scene-body .gb-prompt{color:#9aa19c;}.gb-chip{background:#1b201d;color:#dfe3dd;padding:1px 6px;letter-spacing:1px;}::selection{background:#1b201d;color:#dfe3dd;}.gb-main ::selection,.gb-main::selection,.gb-scene-body ::selection,.gb-scene-body::selection,.gb-summary ::selection,.gb-summary::selection{background:#dfe3dd;color:#1b201d;}",
+    "tabTemplate": "{{이름}}",
+    "tabCss": "",
+    "sceneButtonTemplate": "MAP",
+    "sceneButtonCss": "",
+    "sceneDefaultCollapsed": false,
+    "charCollapseMode": "global",
+    "charFieldsBackup": [],
+    "valueLineBreaks": "off",
+    "valueHtml": false,
+    "instructions": "=== [필독] 다인챗(Multi-NPC) 및 실시간 연속성 유지 규칙 ===\n1. 캐릭터 유지 (No Drop): 직전 상태창에 등장했던 모든 캐릭터({{char}}, {{user}} 및 서브 NPC)는 서사에서 영구적으로 퇴장(사망, 완전한 이탈 등)하지 않는 한 절대 누락하지 말고 각자의 탭에 출력하십시오.\n2. 화면 밖 자율성 (Off-screen Autonomy): 현재 장면에 없는 캐릭터의 시간은 멈추지 않습니다. 대화에 없더라도 탭을 방치하지 말고, 캐릭터의 성격·일과·목표·시간 경과를 바탕으로 '지금쯤 어디서 어떤 자세로 무엇을 하고 있을지' 추론하여 위치, 자세, 행동을 업데이트하십시오. 단, 관계, 호감도, 소지품 등 장기적인 사실 데이터는 서사적 이유 없이 임의로 바꾸지 마십시오. '복장'도 마찬가지로 유지하되, 갈아입을 만한 이유(귀가, 샤워, 취침, 외출 준비, 옷이 젖거나 더러워짐 등)가 생기면 반드시 바꾸십시오.\n3. [★중요] 동적 필드 복붙 금지 (No Verbatim): '속마음', '기분', '자세', '상태(행동)' 같은 텍스트 필드를 직전 상태창에서 그대로 복사/붙여넣기 하는 것을 엄격히 금지합니다. 캐릭터가 화면 안에 있든 밖에 있든, 턴이 지날 때마다 항상 현재 상황과 심리에 맞게 완전히 새로운 문장으로 갱신하십시오. (예외: '목표'는 규칙 5에 따라 유지 가능)\n4. 자연스러운 변화: 호감도 같은 수치는 한 번에 크게 튀지 않도록 점진적으로 변화시키십시오. 장면 필드(시간/장소/날씨)는 이야기 내에서 명시적인 변화가 일어났을 때만 업데이트하며, 비어 있는 값이 있다면 맥락을 통해 가장 합리적인 값을 추론하여 채우십시오.\n5. [★중요] 목표 연속성 (Goal Chain): '목표'는 달성·포기·방해로 중단되기 전까지 그대로 유지하고 매 턴 새로 지어내지 마십시오. 대신 '진행'은 경과 시간과 사건에 맞춰 반드시 앞으로 나아가야 합니다. 목표가 끝나면 진행에 결과를 짧게 남기고(예: 세미나 종료 → [귀가 준비]), 이어서 성격과 일정에 맞는 다음 목표를 세우십시오. 목표가 방해받으면 진행에 그 사실을 반영하십시오(예: 이동 중 → [복도에서 교수에게 붙잡힘] → 세미나 지각 위기).\n6. 등장 판정: 현재 장면에 함께 있는 캐릭터는 '등장'을 ON-SCENE, 없는 캐릭터는 OFF-SCENE으로 표시하십시오. OFF-SCENE 캐릭터는 직전 턴의 '목표'와 '진행'을 출발점으로 삼아 이번 턴의 위치·자세·행동을 이어서 추론합니다. 예) 직전 진행이 '[세미나실로 이동 중]'이고 30분이 흘렀다면 → 위치: 세미나실, 진행: 이동 완료 → [세미나 청강 중] → 질의응답. 장면 밖 캐릭터가 장면 장소에 도착하면 ON-SCENE으로 전환하십시오.\n7. 약속과 하루 기록: '약속'은 서사에서 새 약속이 잡히면 추가하고, 시간이 지나 이행되거나 취소되면 지우십시오. 약속 시각이 다가오면 그 약속을 '목표'로 올려 진행을 시작하십시오. '오늘'은 매 턴 이어서 덧붙이는 누적 기록이며(규칙 3의 복붙 금지 대상이 아님), 목표를 달성하거나 의미 있는 행동을 마치면 시간과 함께 추가하십시오. 장면 '시간'의 날짜가 바뀌면 모든 캐릭터의 '오늘'을 비우고 새로 시작하십시오.",
+    "windowCss": "#us-float, #us-prompt-bubble-window, .us-box, .hx-scroll {\n  --us-float-bg: #2b2d2c;\n  --us-float-fg: #dfe3dd;\n  --us-float-border: #121413;\n  --us-float-muted: #7b837d;\n  --us-float-primary: #dfe3dd;\n  --us-float-primary-fg: #1b201d;\n  --us-float-secondary: #1b201d;\n  --us-float-accent: #3a403c;\n  scrollbar-color: #7b837d #1b201d !important;\n  scrollbar-width: thin !important;\n}\n#us-float .us-f-title, #us-float .us-tab, #us-float .us-scene-button {\n  font-family: 'Courier New', ui-monospace, monospace;\n}\n#us-float .us-tab {\n  border-radius: 0 !important;\n  padding: 4px 12px !important;\n  margin: 0 2px !important;\n}\n#us-float .us-scene-button {\n  border-radius: 0 !important;\n}\n#us-float ::-webkit-scrollbar, .us-box ::-webkit-scrollbar, .hx-scroll::-webkit-scrollbar, .hx-scroll ::-webkit-scrollbar {\n  width: 6px !important;\n  height: 6px !important;\n}\n#us-float ::-webkit-scrollbar-track, .us-box ::-webkit-scrollbar-track, .hx-scroll::-webkit-scrollbar-track, .hx-scroll ::-webkit-scrollbar-track {\n  background: #1b201d !important;\n}\n#us-float ::-webkit-scrollbar-thumb, .us-box ::-webkit-scrollbar-thumb, .hx-scroll::-webkit-scrollbar-thumb, .hx-scroll ::-webkit-scrollbar-thumb {\n  background: #7b837d !important;\n  border-radius: 3px !important;\n}\n#us-float ::-webkit-scrollbar-thumb:hover, .us-box ::-webkit-scrollbar-thumb:hover, .hx-scroll::-webkit-scrollbar-thumb:hover, .hx-scroll ::-webkit-scrollbar-thumb:hover {\n  background: #dfe3dd !important;\n}",
+    "windowCssMode": "custom"
+  }
+}

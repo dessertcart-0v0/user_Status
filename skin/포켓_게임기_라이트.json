@@ -1,0 +1,72 @@
+{
+  "type": "marinara-user-status-item",
+  "version": 1,
+  "exportedAt": "2026-10-22T06:57:45.728Z",
+  "status": {
+    "id": "us-mruvyqgaa96tm",
+    "name": "🎮 포켓 게임기 라이트",
+    "description": "흑녹색 옛 휴대용 게임기 단말\n인물: 관계 · 호감도(게이지) · 기분 · 상태 · 속마음\n장면: 시간 · 장소 · 날씨 · 장면 묘사\n포켓 게임기에서 칸을 줄인 가벼운 판",
+    "fields": [
+      {
+        "key": "이름",
+        "instruction": "현재 탭 캐릭터의 이름 (절대 누락 금지)"
+      },
+      {
+        "key": "관계",
+        "instruction": "상대와의 현재 관계 (예: 소꿉친구, 라이벌)"
+      },
+      {
+        "key": "호감도",
+        "instruction": "호감도 (0~100 숫자만)"
+      },
+      {
+        "key": "기분",
+        "instruction": "현재 기분을 한 단어로 (예: 들뜸, 차분함)"
+      },
+      {
+        "key": "상태",
+        "instruction": "대상의 현재 상태나 행동 (예: 배낭을 정리하는 중)"
+      },
+      {
+        "key": "속마음",
+        "instruction": "현재 상황에 대한 내면 독백 1문장 ({{user}}는 생략)"
+      }
+    ],
+    "folds": [],
+    "sceneFolds": [],
+    "sceneFields": [
+      {
+        "key": "시간",
+        "instruction": "현재 시각 (예: 오전 10시)"
+      },
+      {
+        "key": "장소",
+        "instruction": "현재 위치 (예: 숲)"
+      },
+      {
+        "key": "날씨",
+        "instruction": "현재 날씨 (예: 맑음, 비)"
+      },
+      {
+        "key": "장면 묘사",
+        "instruction": "현재 상황 1~2문장 묘사"
+      }
+    ],
+    "template": "<div class=\"gb-wrap\"><div class=\"gb-screen hx-scroll\"><div class=\"gb-topbar\"><span>SYS.TERM</span><span>SEC.LVL A</span><span class=\"gb-chip\">LINK OK</span></div><div class=\"gb-subhead\"><span class=\"gb-tag\">[ SUBJECT ]</span><span class=\"gb-name\">{{이름}}</span></div><div class=\"gb-main\"><span class=\"gb-prompt\">&gt;</span> {{속마음}}<span class=\"gb-blink\"></span></div><div class=\"gb-status-sec\"><div class=\"gb-status-head\">[ STATUS ]</div><div class=\"gb-status-grid\"><div class=\"gb-row\"><span class=\"gb-lbl\">RELATION</span><span class=\"gb-val\">{{관계}}</span></div><div class=\"gb-row\"><span class=\"gb-lbl\">AFFECTION</span><span class=\"gb-bar-wrap\"><span class=\"gb-bar\"><span class=\"gb-bar-fill\" style=\"width:{{호감도}}%\"></span></span><span class=\"gb-val\">{{호감도}}%</span></span></div><div class=\"gb-row\"><span class=\"gb-lbl\">MOOD</span><span class=\"gb-val\">{{기분}}</span></div><div class=\"gb-row\"><span class=\"gb-lbl\">ACTION</span><span class=\"gb-val\">{{상태}}</span></div></div></div><div class=\"gb-foot\">END OF RECORD</div></div></div>",
+    "css": ".gb-wrap{font-family:\"Courier New\",ui-monospace,monospace;width:100%;box-sizing:border-box;background:#121815;border:1px solid #1f2823;border-radius:4px;padding:2px;overflow-wrap:break-word;word-break:keep-all;overflow:hidden;}.gb-screen{position:relative;background:#121815;background-image:repeating-linear-gradient(0deg,rgba(0,0,0,0.22) 0 1px,transparent 1px 3px);box-shadow:inset 0 0 40px rgba(0,0,0,0.55);padding:10px 11px;overflow-y:scroll !important;overflow-x:hidden !important;scrollbar-gutter:stable;box-sizing:border-box;scrollbar-color:#2c3630 #121815 !important;scrollbar-width:thin !important;color:#cdd1cb;text-shadow:0 0 2px rgba(205,209,203,0.35);font-size:11px;line-height:1.6;}.gb-screen::-webkit-scrollbar,.hx-scroll::-webkit-scrollbar{width:6px !important;height:6px !important;}.gb-screen::-webkit-scrollbar-track,.hx-scroll::-webkit-scrollbar-track{background:#121815 !important;}.gb-screen::-webkit-scrollbar-thumb,.hx-scroll::-webkit-scrollbar-thumb{background:#2c3630 !important;}.gb-screen::-webkit-scrollbar-thumb:hover,.hx-scroll::-webkit-scrollbar-thumb:hover{background:#7b837d !important;}.gb-topbar{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:1.5px;font-weight:700;color:#7b837d;border-bottom:1px solid #cdd1cb;padding-bottom:4px;}.gb-screen{max-height:420px;}.gb-subhead{display:flex;align-items:center;gap:8px;border-top:3px double #cdd1cb;border-bottom:3px double #cdd1cb;padding:5px 2px;margin:7px 0 4px;font-size:12px;font-weight:700;}.gb-tag{font-size:10px;letter-spacing:1.5px;color:#7b837d;flex:none;}.gb-name{word-break:break-all;letter-spacing:0.5px;}.gb-main{background:#cdd1cb;color:#121815;padding:8px 9px;margin:6px 0 9px;font-size:11px;line-height:1.7;font-weight:700;}.gb-main .gb-blink{background:#121815;}.gb-main .gb-prompt{color:#7b837d;}.gb-status-sec{position:relative;border:1px solid #cdd1cb;padding:8px;margin-top:2px;}.gb-status-sec::before,.gb-status-sec::after{content:\"\";position:absolute;width:9px;height:9px;border:3px solid #cdd1cb;}.gb-status-sec::before{top:-2px;left:-2px;border-right:0;border-bottom:0;}.gb-status-sec::after{bottom:-2px;right:-2px;border-left:0;border-top:0;}.gb-status-head{display:flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:2px;margin-bottom:5px;}.gb-status-head::after{content:\"\";flex:1;border-top:1px solid #cdd1cb;margin-left:6px;}.gb-status-grid{display:flex;flex-direction:column;}.gb-row{display:flex;align-items:flex-start;font-size:11.5px;line-height:1.4;gap:6px;padding:4px 0;border-bottom:1px solid #2c3630;}.gb-row:last-child{border-bottom:0;}.gb-lbl{color:#7b837d;font-weight:700;font-size:10px;letter-spacing:0.5px;width:92px;flex:none;padding-top:1px;white-space:nowrap;}.gb-lbl::before{content:\">> \";}.gb-val{font-weight:700;text-align:right;margin-left:auto;}.gb-bar-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;}.gb-bar{width:60px;height:8px;border:1px solid #cdd1cb;background:transparent;overflow:hidden;box-sizing:content-box;}.gb-bar-fill{display:block;height:100%;background:repeating-linear-gradient(90deg,#cdd1cb 0 4px,transparent 4px 6px);}.gb-foot{margin-top:9px;text-align:center;font-size:9px;letter-spacing:2px;color:#7b837d;font-weight:700;}.gb-foot::before{content:\"//// \";}.gb-foot::after{content:\" ////\";}.gb-chip{background:#cdd1cb;color:#121815;padding:1px 6px;letter-spacing:1px;}.gb-main{background:rgba(205,209,203,0.07);color:#cdd1cb;border:1px solid #2c3630;}.gb-main .gb-blink{background:#cdd1cb;}.gb-scene-body{background:rgba(205,209,203,0.07);color:#cdd1cb;border:1px solid #2c3630;}.gb-scene-body .gb-blink{background:#cdd1cb;}.gb-prompt{color:#7b837d;font-weight:700;}.gb-chip{background:#cdd1cb;color:#121815;text-shadow:none;}.gb-bar{border-color:#7b837d;}.gb-row{border-bottom-color:#2c3630;}.gb-status-sec{background:rgba(205,209,203,0.08);border:0;padding:9px 10px;}.gb-status-sec::before,.gb-status-sec::after{border-width:2px;}.gb-row{border-bottom:1px solid rgba(205,209,203,0.12);}.gb-row:last-child{border-bottom:0;}.gb-subhead{border-top:0;border-bottom:0;padding:4px 2px 2px;margin:8px 0 2px;font-size:13px;}",
+    "sceneTemplate": "<div class=\"gb-wrap\"><div class=\"gb-screen gb-scene-screen hx-scroll\"><div class=\"gb-topbar\"><span>FIELD.LOG</span><span class=\"gb-chip\">REC ●</span></div><div class=\"gb-scene-head\"><span class=\"gb-scene-item\"><b>LOC</b>{{장소}}</span><span class=\"gb-scene-item\"><b>WEA</b>{{날씨}}</span><span class=\"gb-scene-item\"><b>TIME</b>{{시간}}</span></div><div class=\"gb-scene-body\"><span class=\"gb-prompt\">&gt;</span> {{장면 묘사}}<span class=\"gb-blink\"></span></div></div></div>",
+    "sceneCss": ".gb-wrap{font-family:\"Courier New\",ui-monospace,monospace;width:100%;box-sizing:border-box;background:#121815;border:1px solid #1f2823;border-radius:4px;padding:2px;overflow-wrap:break-word;word-break:keep-all;overflow:hidden;}.gb-screen{position:relative;background:#121815;background-image:repeating-linear-gradient(0deg,rgba(0,0,0,0.22) 0 1px,transparent 1px 3px);box-shadow:inset 0 0 40px rgba(0,0,0,0.55);padding:10px 11px;overflow-y:scroll !important;overflow-x:hidden !important;scrollbar-gutter:stable;box-sizing:border-box;scrollbar-color:#2c3630 #121815 !important;scrollbar-width:thin !important;color:#cdd1cb;text-shadow:0 0 2px rgba(205,209,203,0.35);font-size:11px;line-height:1.6;}.gb-screen::-webkit-scrollbar,.hx-scroll::-webkit-scrollbar{width:6px !important;height:6px !important;}.gb-screen::-webkit-scrollbar-track,.hx-scroll::-webkit-scrollbar-track{background:#121815 !important;}.gb-screen::-webkit-scrollbar-thumb,.hx-scroll::-webkit-scrollbar-thumb{background:#2c3630 !important;}.gb-screen::-webkit-scrollbar-thumb:hover,.hx-scroll::-webkit-scrollbar-thumb:hover{background:#7b837d !important;}.gb-topbar{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:1.5px;font-weight:700;color:#7b837d;border-bottom:1px solid #cdd1cb;padding-bottom:4px;}.gb-screen{max-height:250px;}.gb-scene-head{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid #cdd1cb;margin:7px 0 6px;font-size:11px;font-weight:700;}.gb-scene-item{display:flex;flex-direction:column;gap:2px;padding:4px 6px;border-right:1px solid #cdd1cb;word-break:break-all;line-height:1.4;}.gb-scene-item:last-child{border-right:0;}.gb-scene-item b{font-size:9px;letter-spacing:1.5px;color:#7b837d;}.gb-scene-body{background:#cdd1cb;color:#121815;line-height:1.7;font-size:11px;padding:8px 9px;}.gb-scene-body .gb-blink{background:#121815;}.gb-scene-body .gb-prompt{color:#7b837d;}.gb-chip{background:#cdd1cb;color:#121815;padding:1px 6px;letter-spacing:1px;}.gb-main{background:rgba(205,209,203,0.07);color:#cdd1cb;border:1px solid #2c3630;}.gb-main .gb-blink{background:#cdd1cb;}.gb-scene-body{background:rgba(205,209,203,0.07);color:#cdd1cb;border:1px solid #2c3630;}.gb-scene-body .gb-blink{background:#cdd1cb;}.gb-prompt{color:#7b837d;font-weight:700;}.gb-chip{background:#cdd1cb;color:#121815;text-shadow:none;}.gb-bar{border-color:#7b837d;}.gb-row{border-bottom-color:#2c3630;}.gb-scene-head{border:0;gap:3px;background:transparent;}.gb-scene-item{background:rgba(205,209,203,0.08);border-right:0;padding:5px 7px;}",
+    "tabTemplate": "{{이름}}",
+    "tabCss": "",
+    "sceneButtonTemplate": "MAP",
+    "sceneButtonCss": "",
+    "sceneDefaultCollapsed": false,
+    "charCollapseMode": "global",
+    "charFieldsBackup": [],
+    "valueLineBreaks": "off",
+    "valueHtml": false,
+    "instructions": "=== [필독] 다인챗(Multi-NPC) 및 실시간 연속성 유지 규칙 ===\n1. 캐릭터 유지 (No Drop): 직전 상태창에 등장했던 모든 캐릭터({{char}}, {{user}} 및 서브 NPC)는 서사에서 영구적으로 퇴장(사망, 완전한 이탈 등)하지 않는 한 절대 누락하지 말고 각자의 탭에 출력하십시오.\n2. 화면 밖 자율성 (Off-screen Autonomy): 현재 장면에 없는 캐릭터의 시간은 멈추지 않습니다. 대화에 없더라도 탭을 방치하지 말고, 캐릭터의 성격 및 일과, 시간 경과를 바탕으로 '지금쯤 어디서 무엇을 하고 있을지' 추론하여 현재 장소와 행동을 업데이트하십시오. 단, 관계, 호감도, 소지품 등 장기적인 사실 데이터는 서사적 이유 없이 임의로 바꾸지 마십시오.\n3. [★중요] 동적 필드 복붙 금지 (No Verbatim): '속마음', '기분', '상태(행동)' 같은 텍스트 필드를 직전 상태창에서 그대로 복사/붙여넣기 하는 것을 엄격히 금지합니다. 캐릭터가 화면 안에 있든 밖에 있든, 턴이 지날 때마다 항상 현재 상황과 심리에 맞게 완전히 새로운 문장으로 갱신하십시오.\n4. 자연스러운 변화: 호감도 같은 수치는 한 번에 크게 튀지 않도록 점진적으로 변화시키십시오. 장면 필드(시간/장소/날씨)는 이야기 내에서 명시적인 변화가 일어났을 때만 업데이트하며, 비어 있는 값이 있다면 맥락을 통해 가장 합리적인 값을 추론하여 채우십시오.",
+    "windowCss": "#us-float, #us-prompt-bubble-window, .us-box, .hx-scroll {\n  --us-float-bg: #121815;\n  --us-float-fg: #cdd1cb;\n  --us-float-border: #1f2823;\n  --us-float-muted: #7b837d;\n  --us-float-primary: #cdd1cb;\n  --us-float-primary-fg: #121815;\n  --us-float-secondary: #2c3630;\n  --us-float-accent: #2c3630;\n  scrollbar-color: #2c3630 #121815 !important;\n  scrollbar-width: thin !important;\n}\n#us-float .us-f-title, #us-float .us-tab, #us-float .us-scene-button {\n  font-family: 'Courier New', ui-monospace, monospace;\n}\n#us-float .us-tab { border-radius: 3px !important; padding: 4px 12px !important; margin: 0 2px !important; }\n#us-float .us-scene-button { border-radius: 3px !important; }\n#us-float ::-webkit-scrollbar, .us-box ::-webkit-scrollbar, .hx-scroll::-webkit-scrollbar, .hx-scroll ::-webkit-scrollbar { width: 6px !important; height: 6px !important; }\n#us-float ::-webkit-scrollbar-track, .us-box ::-webkit-scrollbar-track, .hx-scroll::-webkit-scrollbar-track, .hx-scroll ::-webkit-scrollbar-track { background: #121815 !important; }\n#us-float ::-webkit-scrollbar-thumb, .us-box ::-webkit-scrollbar-thumb, .hx-scroll::-webkit-scrollbar-thumb, .hx-scroll ::-webkit-scrollbar-thumb { background: #2c3630 !important; border-radius: 3px !important; }\n#us-float ::-webkit-scrollbar-thumb:hover, .us-box ::-webkit-scrollbar-thumb:hover, .hx-scroll::-webkit-scrollbar-thumb:hover, .hx-scroll ::-webkit-scrollbar-thumb:hover { background: #7b837d !important; }",
+    "windowCssMode": "custom"
+  }
+}

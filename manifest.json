@@ -1,0 +1,12 @@
+{
+  "kind": "marinara.personal-extension",
+  "version": 1,
+  "config": {
+    "name": "User Status",
+    "version": "2.1.0",
+    "description": "채팅 속 인물과 장면의 상태를 매 턴 기록해 상태창으로 보여 줍니다. 스킨으로 모양과 칸을 바꿀 수 있습니다.",
+    "runtime": "client",
+    "capabilities": ["full_page_access"],
+    "jsPath": "user-status.js"
+  }
+}
