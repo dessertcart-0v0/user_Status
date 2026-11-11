@@ -1,0 +1,104 @@
+{
+  "type": "marinara-user-status-item",
+  "version": 1,
+  "exportedAt": "2026-10-30T06:52:41.634Z",
+  "status": {
+    "id": "us-parchment-ledger",
+    "name": "📜 양피지 기록",
+    "description": "빛바랜 양피지에 적은 인물 기록\n인물: 등장 여부 · 관계 · 호감도(게이지) · 기분 · 위치 · 자세 · 복장 · 상태 · 속마음\n접는 칸: 목표 · 진행 · 약속 · 오늘 기록\n장면: 시간 · 장소 · 날씨 · 장면 묘사\n화면 밖 인물도 지금쯤 뭘 하는지 매 턴 갱신",
+    "fields": [
+      {
+        "key": "이름",
+        "instruction": "현재 탭 캐릭터의 이름 (절대 누락 금지)"
+      },
+      {
+        "key": "등장",
+        "instruction": "현재 장면에 함께 있으면 ON-SCENE, 없으면 OFF-SCENE (둘 중 하나만 출력)"
+      },
+      {
+        "key": "관계",
+        "instruction": "상대와의 관계를 '한 단어 | 한 문장' 형식으로 (예: 소꿉친구 | 요즘 괜히 신경 쓰이는 사이)"
+      },
+      {
+        "key": "호감도",
+        "instruction": "호감도 (0~100 숫자만)"
+      },
+      {
+        "key": "기분",
+        "instruction": "현재 기분을 한 단어로 (예: 들뜸, 차분함)"
+      },
+      {
+        "key": "위치",
+        "instruction": "캐릭터가 실제로 있는 구체적 위치. 장면 장소와 달라도 됨. 장면 밖이면 시간 경과와 목표로 추론 (예: 본관 3층 복도)"
+      },
+      {
+        "key": "자세",
+        "instruction": "현재 자세와 몸의 상태를 짧게 (예: 벽에 기댄 채 팔짱, 서류를 안고 빠른 걸음)"
+      },
+      {
+        "key": "복장",
+        "instruction": "현재 입고 있는 옷과 눈에 띄는 외형을 짧게 (예: 흰 셔츠에 남색 가디건, 머리를 하나로 묶음)"
+      },
+      {
+        "key": "상태",
+        "instruction": "대상의 현재 행동 (예: 배낭을 정리하는 중)"
+      },
+      {
+        "key": "목표",
+        "instruction": "캐릭터가 지금 이루려는 단기 목표 1개 (예: 오후 2시 세미나 참석). 달성·포기·중단 전까지 유지"
+      },
+      {
+        "key": "진행",
+        "instruction": "목표의 진행 단계를 '지난 단계 → [현재 단계] → 다음 단계' 형식으로 (예: 자료 출력 완료 → [세미나실로 이동 중] → 발표 순서 대기)"
+      },
+      {
+        "key": "약속",
+        "instruction": "앞으로 예정된 약속·일정을 '날짜/시간 내용' 형식으로. 여러 개면 ' / '로 구분, 없으면 '없음' (예: 9/27(일) 저녁 7시 영화 / 9/30(수) 과제 마감)"
+      },
+      {
+        "key": "오늘",
+        "instruction": "오늘 한 일을 시간순으로 누적 기록 (예: 09:00 출근 → 12:00 점심 → 14:00 세미나). 날짜가 바뀌면 비우고 새로 시작"
+      },
+      {
+        "key": "속마음",
+        "instruction": "현재 상황에 대한 내면 독백 1문장 ({{user}}는 생략)"
+      }
+    ],
+    "folds": [],
+    "sceneFolds": [],
+    "sceneFields": [
+      {
+        "key": "시간",
+        "instruction": "현재 날짜(월/일, 요일)와 시각 (예: 9/25(금) 오후 3시)"
+      },
+      {
+        "key": "장소",
+        "instruction": "현재 위치 (예: 숲)"
+      },
+      {
+        "key": "날씨",
+        "instruction": "현재 날씨 (예: 맑음, 비)"
+      },
+      {
+        "key": "장면 묘사",
+        "instruction": "현재 상황과 주변 풍경·배경을 1~2문장으로 묘사"
+      }
+    ],
+    "template": "<div class=\"pm-wrap\"><div class=\"pm-in\"><div class=\"pm-scroll hx-scroll\"><div class=\"pm-big pm-name\">{{이름}}</div>{{#관계}}<div class=\"pm-rel\">{{관계}}</div>{{/관계}}<table class=\"pm-tbl\"><tbody><tr><td>호 감</td><td>{{#호감도}}<span class=\"pm-bar\"><span class=\"pm-track\"><span class=\"pm-fill\" style=\"width:{{호감도}}%\"></span></span><span class=\"pm-num\">{{호감도}}</span></span>{{/호감도}}</td></tr><tr><td>기 분</td><td>{{기분}}</td></tr><tr><td>있는 곳</td><td>{{위치}}</td></tr><tr><td>자 세</td><td>{{자세}}</td></tr><tr><td>차 림</td><td>{{복장}}</td></tr><tr><td>하는 일</td><td>{{상태}}</td></tr></tbody></table><div class=\"pm-note pm-thought\">{{속마음}}</div><details class=\"pm-fold\"><summary>목 표</summary><div class=\"pm-goal\">{{목표}}</div><div class=\"pm-prog\">{{진행}}</div><table class=\"pm-tbl\"><tbody><tr><td>약 속</td><td>{{약속}}</td></tr><tr><td>오 늘</td><td>{{오늘}}</td></tr></tbody></table></details></div></div></div>",
+    "css": ".pm-wrap{position:relative;font-family:Garamond,'Nanum Myeongjo','Batang',serif;width:100%;box-sizing:border-box;background:#f4ecd8;border:1px solid #d2b48c;box-shadow:2px 5px 15px rgba(139,69,19,.2);color:#3e2723;padding:30px 0;overflow-wrap:break-word;word-break:keep-all;overflow:hidden;}.pm-wrap::before,.pm-wrap::after,.pm-in::before,.pm-in::after{content:\"\";position:absolute;width:22px;height:22px;pointer-events:none;}.pm-wrap::before{top:8px;left:8px;border-top:2px solid #8d6e63;border-left:2px solid #8d6e63;}.pm-wrap::after{bottom:8px;right:8px;border-bottom:2px solid #8d6e63;border-right:2px solid #8d6e63;}.pm-in::before{top:8px;right:8px;border-top:2px solid #8d6e63;border-right:2px solid #8d6e63;}.pm-in::after{bottom:8px;left:8px;border-bottom:2px solid #8d6e63;border-left:2px solid #8d6e63;}.pm-scroll{overflow-y:auto;overflow-x:hidden;padding:4px 26px 6px;text-align:center;line-height:1.8;scrollbar-width:thin;scrollbar-color:#a1887f #ebdfc4;}.pm-scroll::-webkit-scrollbar{width:6px;}.pm-scroll::-webkit-scrollbar-track{background:#ebdfc4;}.pm-scroll::-webkit-scrollbar-thumb{background:#a1887f;border-radius:3px;}.pm-scroll::-webkit-scrollbar-thumb:hover{background:#795548;}.pm-head{margin-bottom:22px;}.pm-head>span{font-size:12px;color:#795548;letter-spacing:4px;border-bottom:1px solid #a1887f;padding-bottom:5px;}.pm-cap{font-size:11px;color:#795548;letter-spacing:3px;margin-bottom:4px;}.pm-big{font-size:26px;letter-spacing:2px;line-height:1.3;color:#5d4037;margin-bottom:20px;}.pm-tbl{width:100%;border-collapse:collapse;font-size:14px;}.pm-tbl td{padding:7px 0;border-top:1px solid #e0d0b0;vertical-align:top;}.pm-tbl td:first-child{text-align:left;font-size:11px;letter-spacing:3px;color:#795548;width:84px;white-space:nowrap;padding-top:9px;}.pm-tbl td:last-child{text-align:right;}.pm-note{margin-top:18px;padding-top:14px;border-top:1px dashed #c5a880;font-size:12.5px;font-style:italic;color:#5d4037;text-align:left;line-height:1.7;}::selection{background:#d7c29b;color:#3e2723;}.pm-scroll{max-height:480px;}.pm-name{margin-top:6px;}.pm-rel{font-size:13px;color:#795548;margin:-12px 0 20px;}.pm-bar{display:inline-flex;align-items:center;gap:10px;}.pm-track{width:72px;height:4px;background:#e0d0b0;}.pm-fill{display:block;height:100%;background:#8d6e63;}.pm-num{letter-spacing:2px;}.pm-thought{text-align:center;}.pm-thought::before{content:\"“\";}.pm-thought::after{content:\"”\";}.pm-fold{margin-top:18px;border-top:1px dashed #c5a880;}.pm-fold>summary{list-style:none;cursor:pointer;user-select:none;font-size:12px;letter-spacing:4px;color:#795548;padding:10px 0 4px;}.pm-fold>summary::-webkit-details-marker{display:none;}.pm-fold>summary::marker{content:\"\";}.pm-fold>summary::before{content:\"+ \";}.pm-fold[open]>summary::before{content:\"− \";}.pm-fold>summary:hover{color:#3e2723;}.pm-goal{font-size:17px;letter-spacing:1px;color:#5d4037;line-height:1.5;margin:8px 0 6px;}.pm-prog{font-size:12.5px;font-style:italic;color:#795548;margin-bottom:14px;}.pm-fold .pm-tbl td:last-child{font-size:13px;}",
+    "sceneTemplate": "<div class=\"pm-wrap\"><div class=\"pm-in\"><div class=\"pm-scroll hx-scroll\"><div class=\"pm-head\"><span>{{시간}}</span></div><div class=\"pm-cap\">장 소</div><div class=\"pm-big\">{{장소}}</div><table class=\"pm-tbl\"><tbody><tr><td>날 씨</td><td>{{날씨}}</td></tr></tbody></table><div class=\"pm-note\">{{장면 묘사}}</div></div></div></div>",
+    "sceneCss": ".pm-wrap{position:relative;font-family:Garamond,'Nanum Myeongjo','Batang',serif;width:100%;box-sizing:border-box;background:#f4ecd8;border:1px solid #d2b48c;box-shadow:2px 5px 15px rgba(139,69,19,.2);color:#3e2723;padding:30px 0;overflow-wrap:break-word;word-break:keep-all;overflow:hidden;}.pm-wrap::before,.pm-wrap::after,.pm-in::before,.pm-in::after{content:\"\";position:absolute;width:22px;height:22px;pointer-events:none;}.pm-wrap::before{top:8px;left:8px;border-top:2px solid #8d6e63;border-left:2px solid #8d6e63;}.pm-wrap::after{bottom:8px;right:8px;border-bottom:2px solid #8d6e63;border-right:2px solid #8d6e63;}.pm-in::before{top:8px;right:8px;border-top:2px solid #8d6e63;border-right:2px solid #8d6e63;}.pm-in::after{bottom:8px;left:8px;border-bottom:2px solid #8d6e63;border-left:2px solid #8d6e63;}.pm-scroll{overflow-y:auto;overflow-x:hidden;padding:4px 26px 6px;text-align:center;line-height:1.8;scrollbar-width:thin;scrollbar-color:#a1887f #ebdfc4;}.pm-scroll::-webkit-scrollbar{width:6px;}.pm-scroll::-webkit-scrollbar-track{background:#ebdfc4;}.pm-scroll::-webkit-scrollbar-thumb{background:#a1887f;border-radius:3px;}.pm-scroll::-webkit-scrollbar-thumb:hover{background:#795548;}.pm-head{margin-bottom:22px;}.pm-head>span{font-size:12px;color:#795548;letter-spacing:4px;border-bottom:1px solid #a1887f;padding-bottom:5px;}.pm-cap{font-size:11px;color:#795548;letter-spacing:3px;margin-bottom:4px;}.pm-big{font-size:26px;letter-spacing:2px;line-height:1.3;color:#5d4037;margin-bottom:20px;}.pm-tbl{width:100%;border-collapse:collapse;font-size:14px;}.pm-tbl td{padding:7px 0;border-top:1px solid #e0d0b0;vertical-align:top;}.pm-tbl td:first-child{text-align:left;font-size:11px;letter-spacing:3px;color:#795548;width:84px;white-space:nowrap;padding-top:9px;}.pm-tbl td:last-child{text-align:right;}.pm-note{margin-top:18px;padding-top:14px;border-top:1px dashed #c5a880;font-size:12.5px;font-style:italic;color:#5d4037;text-align:left;line-height:1.7;}::selection{background:#d7c29b;color:#3e2723;}.pm-scroll{max-height:260px;}.pm-big{font-size:22px;margin-bottom:16px;}",
+    "tabTemplate": "{{이름}}",
+    "tabCss": "",
+    "sceneButtonTemplate": "장면",
+    "sceneButtonCss": "",
+    "sceneDefaultCollapsed": false,
+    "charCollapseMode": "global",
+    "charFieldsBackup": [],
+    "valueLineBreaks": "off",
+    "valueHtml": false,
+    "instructions": "=== [필독] 다인챗(Multi-NPC) 및 실시간 연속성 유지 규칙 ===\n1. 캐릭터 유지 (No Drop): 직전 상태창에 등장했던 모든 캐릭터({{char}}, {{user}} 및 서브 NPC)는 서사에서 영구적으로 퇴장(사망, 완전한 이탈 등)하지 않는 한 절대 누락하지 말고 각자의 탭에 출력하십시오.\n2. 화면 밖 자율성 (Off-screen Autonomy): 현재 장면에 없는 캐릭터의 시간은 멈추지 않습니다. 대화에 없더라도 탭을 방치하지 말고, 캐릭터의 성격·일과·목표·시간 경과를 바탕으로 '지금쯤 어디서 어떤 자세로 무엇을 하고 있을지' 추론하여 위치, 자세, 행동을 업데이트하십시오. 단, 관계, 호감도, 소지품 등 장기적인 사실 데이터는 서사적 이유 없이 임의로 바꾸지 마십시오. '복장'도 마찬가지로 유지하되, 갈아입을 만한 이유(귀가, 샤워, 취침, 외출 준비, 옷이 젖거나 더러워짐 등)가 생기면 반드시 바꾸십시오.\n3. [★중요] 동적 필드 복붙 금지 (No Verbatim): '속마음', '기분', '자세', '상태(행동)' 같은 텍스트 필드를 직전 상태창에서 그대로 복사/붙여넣기 하는 것을 엄격히 금지합니다. 캐릭터가 화면 안에 있든 밖에 있든, 턴이 지날 때마다 항상 현재 상황과 심리에 맞게 완전히 새로운 문장으로 갱신하십시오. (예외: '목표'는 규칙 5에 따라 유지 가능)\n4. 자연스러운 변화: 호감도 같은 수치는 한 번에 크게 튀지 않도록 점진적으로 변화시키십시오. 장면 필드(시간/장소/날씨)는 이야기 내에서 명시적인 변화가 일어났을 때만 업데이트하며, 비어 있는 값이 있다면 맥락을 통해 가장 합리적인 값을 추론하여 채우십시오.\n5. [★중요] 목표 연속성 (Goal Chain): '목표'는 달성·포기·방해로 중단되기 전까지 그대로 유지하고 매 턴 새로 지어내지 마십시오. 대신 '진행'은 경과 시간과 사건에 맞춰 반드시 앞으로 나아가야 합니다. 목표가 끝나면 진행에 결과를 짧게 남기고(예: 세미나 종료 → [귀가 준비]), 이어서 성격과 일정에 맞는 다음 목표를 세우십시오. 목표가 방해받으면 진행에 그 사실을 반영하십시오(예: 이동 중 → [복도에서 교수에게 붙잡힘] → 세미나 지각 위기).\n6. 등장 판정: 현재 장면에 함께 있는 캐릭터는 '등장'을 ON-SCENE, 없는 캐릭터는 OFF-SCENE으로 표시하십시오. OFF-SCENE 캐릭터는 직전 턴의 '목표'와 '진행'을 출발점으로 삼아 이번 턴의 위치·자세·행동을 이어서 추론합니다. 예) 직전 진행이 '[세미나실로 이동 중]'이고 30분이 흘렀다면 → 위치: 세미나실, 진행: 이동 완료 → [세미나 청강 중] → 질의응답. 장면 밖 캐릭터가 장면 장소에 도착하면 ON-SCENE으로 전환하십시오.\n7. 약속과 하루 기록: '약속'은 서사에서 새 약속이 잡히면 추가하고, 시간이 지나 이행되거나 취소되면 지우십시오. 약속 시각이 다가오면 그 약속을 '목표'로 올려 진행을 시작하십시오. '오늘'은 매 턴 이어서 덧붙이는 누적 기록이며(규칙 3의 복붙 금지 대상이 아님), 목표를 달성하거나 의미 있는 행동을 마치면 시간과 함께 추가하십시오. 장면 '시간'의 날짜가 바뀌면 모든 캐릭터의 '오늘'을 비우고 새로 시작하십시오.",
+    "windowCss": "#us-float, #us-prompt-bubble-window, .us-box, .hx-scroll {\n  --us-float-bg: #f4ecd8;\n  --us-float-fg: #3e2723;\n  --us-float-border: #d2b48c;\n  --us-float-muted: #795548;\n  --us-float-primary: #5d4037;\n  --us-float-primary-fg: #f4ecd8;\n  --us-float-secondary: #ebdfc4;\n  --us-float-accent: #e0d0b0;\n  scrollbar-color: #a1887f #ebdfc4 !important;\n  scrollbar-width: thin !important;\n}\n#us-float, #us-prompt-bubble-window {\n  border-radius: 2px;\n  box-shadow: 2px 5px 15px rgba(139,69,19,.2);\n}\n#us-float .us-f-title, #us-float .us-tab, #us-float .us-scene-button {\n  font-family: Garamond,'Nanum Myeongjo','Batang',serif;\n  letter-spacing: 2px;\n}\n#us-float .us-tab, #us-float .us-scene-button {\n  border-radius: 0 !important;\n}\n#us-float .us-tab.on {\n  background: #e0d0b0 !important;\n  color: #3e2723 !important;\n  border-color: #8d6e63 !important;\n}\n#us-float ::-webkit-scrollbar, .us-box ::-webkit-scrollbar, .hx-scroll::-webkit-scrollbar, .hx-scroll ::-webkit-scrollbar {\n  width: 6px !important;\n  height: 6px !important;\n}\n#us-float ::-webkit-scrollbar-track, .us-box ::-webkit-scrollbar-track, .hx-scroll::-webkit-scrollbar-track, .hx-scroll ::-webkit-scrollbar-track {\n  background: #ebdfc4 !important;\n}\n#us-float ::-webkit-scrollbar-thumb, .us-box ::-webkit-scrollbar-thumb, .hx-scroll::-webkit-scrollbar-thumb, .hx-scroll ::-webkit-scrollbar-thumb {\n  background: #a1887f !important;\n  border-radius: 3px !important;\n}\n#us-float ::-webkit-scrollbar-thumb:hover, .us-box ::-webkit-scrollbar-thumb:hover, .hx-scroll::-webkit-scrollbar-thumb:hover, .hx-scroll ::-webkit-scrollbar-thumb:hover {\n  background: #795548 !important;\n}",
+    "windowCssMode": "custom"
+  }
+}

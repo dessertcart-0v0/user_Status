@@ -1,4 +1,4 @@
-// User Status for Marinara — v2.1.0
+// User Status for Marinara — v2.1.3
 (function (marinara) {
   "use strict";
 
@@ -143,7 +143,7 @@
   if (previousRuntime && typeof previousRuntime.dispose === "function") previousRuntime.dispose();
   const runtime = createCrossVersionApi(marinara);
   marinara = runtime.api;
-  const runtimeMarker = { version: "2.1.0", dispose: runtime.dispose };
+  const runtimeMarker = { version: "2.1.3", dispose: runtime.dispose };
   window.__marinaraUserStatusRuntime = runtimeMarker;
   marinara.onCleanup(() => {
     if (window.__marinaraUserStatusRuntime === runtimeMarker) delete window.__marinaraUserStatusRuntime;
@@ -233,8 +233,78 @@
     "If a {{char}} or {{user}} is simply elsewhere, still output them and state where they are, inferring their location from prior messages and earlier status values.",
     "Treat each stat's established baseline as its maximum, and only apply increases or decreases driven by events such as damage, healing, or the passage of time.",
     "For the scene block, keep time/location/posture consistent with the previous scene state; only change what the narrative actually changed (e.g. time passing, moving to a new place, characters changing posture).",
-    "Never output values that are character-for-character identical to the previous state; even when the situation is stable, at least the most dynamic field (mood, activity, or posture) should reflect the current moment.",
+    "Update every field the scene actually changed. If nothing in the scene changed a field, keeping its previous value is correct — never invent a change just to make the output differ from the previous state.",
   ].join(" ");
+  // 예전 기본 규칙의 마지막 줄 — "직전과 똑같이 쓰지 말라"가 본문에 없는 변화(다시 잠듦 등)를 지어내게 했다.
+  const OLD_CONTINUITY_LAST_LINE = "Never output values that are character-for-character identical to the previous state; even when the situation is stable, at least the most dynamic field (mood, activity, or posture) should reflect the current moment.";
+  // 기준 시점: 상태값은 대상 메시지가 끝난 순간 그대로. 사용자 규칙과 상관없이 항상 넣는다.
+  function timingRule(apiOnly) {
+    const target = apiOnly ? "대상 메시지" : "이번 답변";
+    return `[기준 시점] 모든 값은 ${target}의 마지막 문장이 끝난 순간의 상태입니다. ` +
+      `그 뒤에 일어날 법한 행동·자세·감정·시간 경과를 예측하거나 미리 진행시키지 마세요. ` +
+      `예: 본문이 "잠들었다가 깼다"로 끝나면 "깨어 있음"이지 "다시 잠듦"이 아닙니다.\n` +
+      `직전 상태창 값은 틀렸을 수 있습니다. 인물이 직접 말하거나 움직이지 않아도, 다른 인물이 말을 걸고 물건을 건네고 ` +
+      `얼굴·자세를 살피는 묘사가 있으면 그것도 근거입니다. 직전 값이 이런 묘사와 맞지 않으면(직전 "잠듦"인데 본문에서 말을 듣고 ` +
+      `물건을 받는 등) 직전 값을 버리고 본문 묘사로 다시 정하세요.`;
+  }
+
+  // 기본 행과 편집기가 추가한 .row 행에 같은 열과 오른쪽 끝을 쓴다.
+  const DARK_GOLD_CSS = `.f{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;width:100%;min-width:0;box-sizing:border-box;
+ color:#e8dfcc;background:radial-gradient(ellipse at 10% 0%,#302a1d 0,transparent 65%),#171816;
+ border:1px solid #8c7442;border-radius:8px;padding:16px 16px 20px;
+ box-shadow:inset 0 0 0 3px #171816,inset 0 0 0 4px #b79a5526,0 6px 18px #00000030;
+ overflow-wrap:anywhere;word-break:keep-all;font-size:12px;line-height:1.6}
+.ttl{display:flex;align-items:center;gap:10px;min-width:0;margin:0 0 8px;padding:0 0 12px;
+ border-bottom:1px solid #665432;color:#f0dbab;font-family:Georgia,"Noto Serif KR",serif;font-size:16px;font-weight:700;letter-spacing:.03em}
+.crest{display:grid;place-items:center;flex:none;width:28px;height:28px;border:1px solid #8c7442;border-radius:4px;
+ color:#d8b975;background:linear-gradient(135deg,#51412750,#1b1b17);font-size:17px;line-height:1}
+.line,.row{display:grid;grid-template-columns:minmax(0,64px) minmax(0,1fr);align-items:baseline;gap:12px;
+ min-width:0;padding:7px 0;font-size:12px;line-height:1.6;border-bottom:1px solid #b79a551a}
+.line:last-child,.row:last-child{border-bottom:0;padding-bottom:0}
+.k,.lab{min-width:0;color:#b7aa8c;font-weight:400}
+.v,.val{display:block;min-width:0;justify-self:stretch;color:#eee6d6;font-weight:500;text-align:right;
+ overflow-wrap:anywhere;word-break:keep-all;font-variant-numeric:tabular-nums}
+.resource .k{display:flex;align-items:center;gap:7px;letter-spacing:.08em;font-size:11px;font-weight:700}
+.resource .k::before{content:"";width:3px;height:10px;border-radius:1px;background:#c87a70;flex:none}
+.resource.mp .k::before{background:#7f9ec8}
+.resource .v{font-size:14px;letter-spacing:.04em;color:#f0dbab}`;
+  const DARK_GOLD_TEMPLATE = `<div class="f">
+  <div class="ttl"><span class="crest" aria-hidden="true">✦</span><span>{{이름}}</span></div>
+  <div class="line resource"><span class="k">HP</span><span class="v">{{HP}}</span></div>
+  <div class="line resource mp"><span class="k">MP</span><span class="v">{{MP}}</span></div>
+  <div class="line"><span class="k">상태</span><span class="v">{{상태}}</span></div>
+  <div class="line"><span class="k">장비</span><span class="v">{{장비}}</span></div>
+</div>`;
+  const DARK_GOLD_SCENE_CSS = `.scene{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;width:100%;min-width:0;box-sizing:border-box;
+ border:1px solid #665432;border-radius:8px;padding:12px 14px 18px;background:linear-gradient(135deg,#24231c,#191a17);
+ color:#ded5c1;font-size:12px;line-height:1.7;overflow-wrap:anywhere;word-break:keep-all}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;padding-bottom:9px;margin-bottom:9px;border-bottom:1px solid #b79a552b;color:#e1c78d;font-size:11px}
+.head span{min-width:0;overflow-wrap:anywhere}.head i{font-style:normal;color:#a28b59;margin-right:6px}
+.sub+.sub{margin-top:7px;color:#b7aa8c}.sub i{font-style:normal;color:#c6a96a;margin-right:6px}`;
+  const DARK_GOLD_SCENE_TEMPLATE = `<div class="scene">
+  <div class="head"><span><i aria-hidden="true">◷</i>{{시간}}</span><span><i aria-hidden="true">◇</i>{{장소}}</span></div>
+  <div class="sub">{{장면 묘사}}</div>
+  <div class="sub"><i aria-hidden="true">›</i>{{자세/동작}}</div>
+</div>`;
+  const DARK_GOLD_WINDOW_CSS = `#us-float, #us-prompt-bubble-window {
+  border-radius:10px;box-shadow:0 12px 32px #00000040;
+  --us-float-bg:#141512;--us-float-fg:#e8dfcc;--us-float-border:#665432;
+  --us-float-muted:#b7aa8c;--us-float-primary:#d8b975;--us-float-primary-fg:#171816;
+  --us-float-secondary:#24251f;--us-float-accent:#333126;
+}
+#us-float .us-f-title {font-family:Georgia,"Noto Serif KR",serif;letter-spacing:.02em}
+#us-float .us-tab, #us-float .us-scene-button {font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+#us-float .us-tab {border:1px solid #51472f;border-radius:5px;background:#1a1b17;color:#b7aa8c}
+#us-float .us-tab.on {border-color:#a98b4f;background:#3b3322;color:#f0dbab}
+#us-float .us-tab:hover {background:#302c20}
+#us-float .us-scene-button {border-color:#665432;background:#24251f;color:#ded5c1}
+#us-float .us-scene-button:hover {background:#333126}
+.us-box {
+  --us-box-bg:#171816;--us-box-fg:#e8dfcc;--us-box-border:#665432;--us-box-muted:#b7aa8c;
+  --us-box-input-bg:#11120f;--us-box-secondary:#24251f;--us-box-accent:#333126;
+  --us-box-primary:#d8b975;--us-box-primary-fg:#171816;
+  --us-box-switch-off:#665432;--us-box-switch-on:#d8b975;--us-box-switch-thumb:#171816;
+}`;
 
   // ── 네온 터미널 (스타터 · 손대지 않은 옛 판 갈아끼우기에 같이 씀) ──
   const NEON_MONO = "'D2Coding','JetBrains Mono','Cascadia Mono',Consolas,ui-monospace,monospace";
@@ -419,85 +489,17 @@
         { key: "장면 묘사", instruction: "지금 벌어지는 상황을 1~2문장으로. 예: 둘은 우산 하나를 나눠 쓰고 걷는 중" },
         { key: "자세/동작", instruction: "등장 캐릭터들의 현재 자세·동작. 예: A는 벤치에 앉아 있고, B는 그 앞에 서 있음" },
       ],
-      css: `.f{font-family:Georgia,serif;width:100%;box-sizing:border-box;color:#e8d7a8;
- background:radial-gradient(circle at 30% 0%,#3a2f1c,#1a160f);border:1px solid #b8923f;
- border-radius:10px;padding:14px 16px;box-shadow:0 0 0 1px #00000060,0 6px 16px #00000070;
- overflow-wrap:break-word;word-break:keep-all;}
-.ttl{font-size:13px;letter-spacing:1px;color:#d8b85a;margin-bottom:8px;border-bottom:1px solid #6b5526;padding-bottom:6px;font-weight:700}
-.line{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;font-size:13px;padding:4px 0;line-height:1.45}
-.k{color:#b39a5e;flex:none}.v{color:#f3e6bf;font-weight:600;text-align:right;overflow-wrap:break-word;word-break:keep-all}`,
-      template: `<div class="f">
-  <div class="ttl">⚜ {{이름}}</div>
-  <div class="line"><span class="k">HP</span><span class="v">{{HP}}</span></div>
-  <div class="line"><span class="k">MP</span><span class="v">{{MP}}</span></div>
-  <div class="line"><span class="k">상태</span><span class="v">{{상태}}</span></div>
-  <div class="line"><span class="k">장비</span><span class="v">{{장비}}</span></div>
-</div>`,
-      sceneCss: `.scene{font-family:Georgia,serif;width:100%;box-sizing:border-box;border-radius:10px;padding:10px 12px;border:1px solid #9f7a2d;background:radial-gradient(circle at 0% 0%,#342713,#17130d);color:#e4d3a0;box-shadow:0 0 0 1px #00000066}
-.head{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;font-weight:700;color:#d8b85a}
-.sub{margin-top:6px;font-size:11px;line-height:1.55;color:#cdbb8c}`,
-      sceneTemplate: `<div class="scene">
-  <div class="head"><span>⌛ {{시간}}</span><span>🜂 {{장소}}</span></div>
-  <div class="sub">{{장면 묘사}}</div>
-  <div class="sub">⚔ {{자세/동작}}</div>
-</div>`,
+      css: DARK_GOLD_CSS,
+      template: DARK_GOLD_TEMPLATE,
+      sceneCss: DARK_GOLD_SCENE_CSS,
+      sceneTemplate: DARK_GOLD_SCENE_TEMPLATE,
       tabTemplate: DEFAULT_TAB_TEMPLATE,
       tabCss: "",
       sceneButtonTemplate: DEFAULT_SCENE_BUTTON_TEMPLATE,
       sceneButtonCss: "",
       instructions: "",
       windowCssMode: "custom",
-      windowCss: `/* ══ 다크 골드 판타지 · 윈도우(창 틀) 테마 ══════════════
-   이 CSS는 상태창을 감싸는 "창(틀)"만 꾸밉니다.
-   ─ 어디에 무엇? ────────────────────────────────────
-   #us-float                → 화면에 떠 있는 플로팅 상태창 (틀·탭·버튼·테두리)
-   #us-prompt-bubble-window → 추가 요청사항 입력 창 (플로팅과 같은 --us-float-* 변수 공유)
-   .us-box                  → 설정창·상태창 편집기 창
-   ─ 변수 접두사 ─────────────────────────────────────
-   --us-float-* : 위 플로팅/요청창에 적용   (아래 #us-float 블록)
-   --us-box-*   : 설정/편집 창에 적용        (아래 .us-box 블록)
-   변수만 바꾸면 그 안의 탭·버튼·입력칸·테두리·텍스트가 모두 따라옵니다.
-   ─ 주의 ────────────────────────────────────────────
-   상태창 카드(HP/MP 등 내용 카드) 자체의 색·폰트는 여기가 아니라
-   편집기의 "카드 CSS"·"장면 CSS" 칸에서 바꿉니다. (카드는 독립 영역이라 이 창 CSS가 닿지 않음)
-   font-family 처럼 변수로 제어되지 않는 속성은 #us-float 안의 요소를 직접 지정합니다(아래 폰트 블록 참고).
-*/
-
-/* ① 플로팅 상태창 + 추가 요청사항 창 ─ 변수: --us-float-* */
-#us-float, #us-prompt-bubble-window {
-  border-radius: 10px;
-  box-shadow: 0 0 0 1px #00000060, 0 6px 16px #00000070;
-  --us-float-bg: radial-gradient(circle at 30% 0%,#2a2010,#12100a); /* 창 배경 */
-  --us-float-fg: #e8d7a8;        /* 주 텍스트 */
-  --us-float-border: #b8923f;    /* 테두리 */
-  --us-float-muted: #b39a5e;     /* 보조 텍스트 (레이블·힌트) */
-  --us-float-primary: #d8b85a;   /* 강조색 (활성 탭·아이콘 on 등) */
-  --us-float-primary-fg: #1a160f;
-  --us-float-secondary: #2a1f0e; /* 버튼·장면 버튼 배경 */
-  --us-float-accent: #3a2f1c;    /* 호버 배경 */
-}
-/* 타이틀·탭(캐릭터명)·장면 버튼 폰트 통일 — font-family 는 변수로 제어되지 않아 별도 지정.
-   탭/장면 버튼 글자는 shadow host 안에서 font-family:inherit 라 부모에 지정하면 그대로 따라옵니다. */
-#us-float .us-f-title,
-#us-float .us-tab,
-#us-float .us-scene-button { font-family: Georgia, serif; }
-
-/* 설정창·편집기 창 */
-.us-box {
-  --us-box-bg: #1a160f;          /* 창 배경 */
-  --us-box-fg: #e8d7a8;          /* 주 텍스트 */
-  --us-box-border: #9f7a2d;      /* 테두리·구분선 */
-  --us-box-muted: #b39a5e;       /* 보조 텍스트 (섹션 제목·노트) */
-  --us-box-input-bg: #12100a;    /* 입력 필드 배경 */
-  --us-box-secondary: #2a1f0e;   /* 일반 버튼 배경 */
-  --us-box-accent: #3a2f1c;      /* 버튼 호버 배경 */
-  --us-box-primary: #d8b85a;     /* 강조 버튼·활성 탭·토글 */
-  --us-box-primary-fg: #1a160f;
-  --us-box-switch-off: #9f7a2d;  /* 토글 미선택 트랙 색 */
-  --us-box-switch-on: #d8b85a;   /* 토글 선택(켜짐) 트랙 색 */
-  --us-box-switch-thumb: #1a160f; /* 토글 손잡이 색 (어두운 배경) */
-  /* 일반 체크박스(impersonate·기록 전환 등)의 체크·호버 강조색은 위 --us-box-primary 를 자동으로 따라갑니다 */
-}`,
+      windowCss: DARK_GOLD_WINDOW_CSS,
     },
     {
       name: "🟢 네온 터미널",
@@ -719,6 +721,8 @@
     incPersona: false,    // 유저 페르소나 참조 (기본 OFF)
     
     hiddenExcludeFromPrompt: false, // 눈으로 숨긴 캐릭터를 캡처 프롬프트에서도 제외 (이름 목록 + 캐릭터 카드)
+    presetRefId: null,       // API 캡처에 섹션을 빌려 올 마리나라 프리셋 ID (null = 안 씀)
+    presetRefSections: [],   // 그 프리셋에서 고른 섹션 ID. 본문은 저장하지 않고 쓸 때마다 프리셋에서 읽는다
   };
   const DEFAULT_UI = { floatCollapsed: false, floatPos: null, panelTab: "status", sceneCollapsed: {}, charCollapsed: {}, charCollapseEnabled: false, historyHoverPreview: true, windowCss: "", windowCssMode: "marinara", applyWindowCssToPanels: false, dynamicWindowCss: true, floatMinimizeMode: "bar", displayMode: "inline", inlineFullWidth: false, inlineShowTitle: true, inlineWindowCollapsed: {}, inlineWindowDefaultCollapsed: false, inlineSceneDefaultCollapsed: true, inlineCharDefaultCollapsed: true, firstCaptureAskedChats: {}, iconPos: null,
     // 제목 바(상단 바)로 접기/펼치기: "click"(기본) | "off"
@@ -983,6 +987,10 @@
     out.recordLimit = Math.floor(out.recordLimit);
     if (out.dataMode !== DATA_MODES.api) out.dataMode = DATA_MODES.inline;
     if (typeof out.defaultInstructions !== "string") out.defaultInstructions = DEFAULT_CONTINUITY_PROMPT;
+    else if (out.defaultInstructions.indexOf(OLD_CONTINUITY_LAST_LINE) >= 0) {
+      out.defaultInstructions = out.defaultInstructions.split(OLD_CONTINUITY_LAST_LINE).join(
+        DEFAULT_CONTINUITY_PROMPT.slice(DEFAULT_CONTINUITY_PROMPT.lastIndexOf("Update every field")));
+    }
     out.stripFromMessage = true; // always on — no longer user-configurable
     return out;
   }
@@ -1054,13 +1062,27 @@
     ["📱 모던 폰", ".phfill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0a84ff,#34c759)}", ".phfill{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#0a84ff,#34c759)}"],
     ["👾 다마고치", ".tgfill{height:100%;background:repeating-linear-gradient(90deg,#1a1a1a 0 6px,#9333ea 6px 9px)}", ".tgfill{display:block;height:100%;background:repeating-linear-gradient(90deg,#1a1a1a 0 6px,#9333ea 6px 9px)}"],
   ];
-  // 손대지 않은 옛 네온 터미널에 새 디자인을 입힌다. 옛 판과 글자까지 같은 묶음만 바꾼다
-  //   (카드 CSS+템플릿, 장면 CSS+템플릿, 창 CSS 묶음별로. 고친 묶음은 그대로). 바꾼 게 있으면 true.
-  function upgradeNeonTerminal() {
+  // 옛 기본 디자인과 정확히 일치하는 부분만 갱신한다. 추가한 필드와 사용자 디자인은 보존한다.
+  function upgradeStarterSkins() {
     const fp = (s) => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(36) + "." + s.length; };
     const same = (w, k, v) => fp((w[k] || "").toString()) === v;
     let changed = false;
     for (const w of config.statuses) {
+      if (w.name === "🗡 다크 골드 판타지") {
+        if (same(w, "css", "1ghp31g.693")) { w.css = DARK_GOLD_CSS; changed = true; }
+        // 편집기가 덧붙인 기본 행도 남긴 채, 원래 네 행과 제목만 새 디자인으로 교체한다.
+        const tpl = (w.template || "").toString();
+        const tail = tpl.slice(374);
+        if (fp(tpl.slice(0, 374)) === "k1gvp7.374" && /^(?:\s*<div class="row"><span class="lab">[^<>]*<\/span><span class="val">\{\{[^{}]+\}\}<\/span><\/div>)*\s*<\/div>\s*$/.test(tail)) {
+          w.template = DARK_GOLD_TEMPLATE.slice(0, DARK_GOLD_TEMPLATE.lastIndexOf("</div>")) + tail;
+          changed = true;
+        }
+        if (same(w, "sceneCss", "15lj2mr.389") && same(w, "sceneTemplate", "xoi6j6.168")) {
+          w.sceneCss = DARK_GOLD_SCENE_CSS; w.sceneTemplate = DARK_GOLD_SCENE_TEMPLATE; changed = true;
+        }
+        if (same(w, "windowCss", "ffra2t.2254")) { w.windowCss = DARK_GOLD_WINDOW_CSS; changed = true; }
+        continue;
+      }
       if (w.name !== "🟢 네온 터미널") continue;
       if (same(w, "css", "1xl6fvt.946") && same(w, "template", "1ewmkvz.529")) { w.css = NEON_TERMINAL_CSS; w.template = NEON_TERMINAL_TEMPLATE; changed = true; }
       if (same(w, "sceneCss", "d4l0e.408") && same(w, "sceneTemplate", "1n3vqvu.176")) { w.sceneCss = NEON_TERMINAL_SCENE_CSS; w.sceneTemplate = NEON_TERMINAL_SCENE_TEMPLATE; changed = true; }
@@ -1090,7 +1112,7 @@
         config.statuses = config.statuses.filter((x) => x.id !== w.id);
         config.statuses.splice(Math.min(i, config.statuses.length), 0, { ...w, localOnly: true });
       });
-      upgraded = upgradeNeonTerminal();
+      upgraded = upgradeStarterSkins();
       config.activeId = data.activeId || null;
       if (prevActive && config.statuses.some((w) => w.id === prevActive && w.localOnly)) config.activeId = prevActive;
       if (config.activeId && !config.statuses.some((w) => w.id === config.activeId)) config.activeId = config.statuses[0]?.id || null;
@@ -1398,7 +1420,7 @@
     config.starterDescFilled = true;
     saveConfig();
   }
-  if (upgradeNeonTerminal()) saveConfig();
+  if (upgradeStarterSkins()) saveConfig();
   startServerConfigSync();
   // applyWindowCss() 호출은 아래 상태 캐시 const(latestAsstByChat 등) 선언 이후로 이동했습니다.
   // dynamicWindowCss 가 켜진 채 새로고침하면 여기서 resolveDisplayEntry→currentRenderMeta→latestAsstByChat
@@ -3040,7 +3062,7 @@
     const sceneRules = sceneOn
       ? `\n[장면 작성 기준]\n${status.sceneFields.map((f) => `- ${f.key}: ${f.instruction || "현재 값"}`).join("\n")}\n` +
         `위 상태창의 장면 값에서 이어서, 대화(대상 메시지와 그 앞 기록)에서 실제로 바뀐 것을 모두 갱신하세요. ` +
-        `시각·날짜처럼 이어져야 하는 값은 직전 값을 기준으로 경과한 만큼만 진행시키고, 근거 없이 되돌리거나 건너뛰지 마세요.`
+        `시각·날짜처럼 이어져야 하는 값은 직전 값을 기준으로 본문에서 실제로 흐른 만큼만 진행시키고, 근거 없이 되돌리거나 건너뛰지 마세요.`
       : "";
     // 필수 등장 인물 목록: 이전에 캡처된 이름 + 캐릭터 카드에 배정된 이름을 합친 것.
     //   한 번도 출력된 적 없는 카드 캐릭터도 여기 포함되므로, 아래에서 "전원 필수"를 명시해야
@@ -3065,6 +3087,8 @@
       ? `[작성 기준]\n${rules}\n` +
         `[판단 순서] ① 대상 메시지 본문 ② 그 앞 대화 기록(주어진 경우) ③ 위 상태창 값. ` +
         `상태창 값은 출발점일 뿐이며, 대화와 어긋나면 언제나 대화를 따릅니다.\n` +
+        `채팅 요약·로어북·옛 대화 기록은 지난 줄거리입니다. 거기 적힌 상태(예: 잠듦)는 그때의 상태이지 지금 상태가 아닙니다. ` +
+        `대상 메시지 묘사와 어긋나면 버리세요.\n` +
         `인물마다 따로, 대화에서 그 인물이 한 말·행동·이동·감정 변화·입은 피해 등을 먼저 찾아 반영하세요. ` +
         `대상 메시지에 이름이 직접 나오지 않아도 대명사·호칭·앞 턴 대화로 드러난 변화는 반영합니다. ` +
         `대화 어디에도 변화 근거가 없는 값만 직전 값을 유지하고, ` +
@@ -3080,7 +3104,7 @@
       `Top level is an object with exactly two keys: "subjects" (array) and "scene". Add no other top-level keys.\n` +
       `Do NOT use YAML, "key: value" plain text, indentation-based nesting, markdown tables, HTML tags, or comments.\n` +
       `"us-status" is only a code-fence label, not a custom syntax — mirror the JSON structure shown above.\n` +
-      `${charRulesBlock}${sceneRules}${subjBlock}${extraBlock}\n${REQ.end}`;
+      `${charRulesBlock}${sceneRules}\n${timingRule(apiOnly)}${subjBlock}${extraBlock}\n${REQ.end}`;
   }
   function buildCurrentStateText(chatId, status, anchorMsgId, opts) {
     const src = resolvePromptSource(chatId, status && status.id, anchorMsgId, opts);
@@ -4023,6 +4047,53 @@
       if (chatId === getChatId()) invalidateFloat();
     }
   }
+  // ── 프리셋 섹션 참조 (API 캡처 전용) ──
+  //  캡처는 채팅 프리셋을 통째로 건너뛴다(skipPreset). 그러면 캐릭터 해석 규칙도 빠져서
+  //  감정·속마음 값이 뻔한 유형으로 흐른다 → 고른 섹션만 빌려 붙인다.
+  //  저장은 프리셋 ID + 섹션 ID 뿐. 본문은 쓸 때마다 프리셋에서 읽으므로 프리셋을 고치면 그대로 따라간다.
+  //  프리셋 쪽 켜짐/꺼짐과는 상관없다 — 꺼 둔 섹션도 여기서 고르면 들어간다.
+  const PRESET_REF_TTL = 60000;
+  const presetFullCache = {}; // presetId → { ts, data }
+  async function fetchPresetFull(presetId, fresh) {
+    const hit = presetFullCache[presetId];
+    if (!fresh && hit && Date.now() - hit.ts < PRESET_REF_TTL) return hit.data;
+    const data = await marinara.apiFetch(`/prompts/${encodeURIComponent(presetId)}/full`);
+    presetFullCache[presetId] = { ts: Date.now(), data };
+    return data;
+  }
+  // {{// 주석}} 은 엔진 stripMacroComments 와 같은 규칙(첫 '}}' 까지)으로 뗀다.
+  function presetSectionText(sec) {
+    return String((sec && sec.content) || "").replace(/\{\{\/\/[\s\S]*?\}\}/g, "").trim();
+  }
+  // 프리셋 화면 순서(sectionOrder) 그대로. 마커·빈 섹션은 뺀다.
+  function orderedPresetSections(full) {
+    const secs = (full && Array.isArray(full.sections) ? full.sections : [])
+      .filter((s) => s && s.id && String(s.isMarker) !== "true" && presetSectionText(s));
+    let order = full && full.preset && full.preset.sectionOrder;
+    if (typeof order === "string") { try { order = JSON.parse(order); } catch (_) { order = null; } }
+    if (Array.isArray(order) && order.length) {
+      const pos = new Map(order.map((id, i) => [id, i]));
+      const at = (s) => (pos.has(s.id) ? pos.get(s.id) : 1e9);
+      secs.sort((a, b) => at(a) - at(b));
+    }
+    return secs;
+  }
+  // 선택지 변수({{이름}})는 skipPreset 요청에서 채워지지 않는다 — 목록에 표시만 한다.
+  function presetChoiceVars(full) {
+    return (full && Array.isArray(full.choiceBlocks) ? full.choiceBlocks : [])
+      .map((c) => c && c.variableName).filter(Boolean);
+  }
+  async function buildPresetRefBlock(st) {
+    const pid = st && st.presetRefId;
+    const ids = st && Array.isArray(st.presetRefSections) ? st.presetRefSections : [];
+    if (!pid || !ids.length) return "";
+    const want = new Set(ids);
+    const parts = orderedPresetSections(await fetchPresetFull(pid))
+      .filter((s) => want.has(s.id)).map(presetSectionText);
+    if (!parts.length) return "";
+    return "[캐릭터 해석 기준 — 채팅 프리셋에서 골라 온 규칙입니다. 인물의 감정·속마음·관계 값을 정할 때 따르세요. 문체·분량 지시는 상태값에 해당하지 않습니다.]\n\n"
+      + parts.join("\n\n");
+  }
   // 캡처용 dryRun 요청 바디를 구성한다 (captureApiInner + 진단 토큰 측정 공용).
   // sentChars: extensionBlocks로 직접 보내는 글자수(히스토리/로어북/캐릭터/페르소나는 서버 조립분이라 미포함).
   async function buildCaptureReqBody(chatId, st, status, opts) {
@@ -4121,6 +4192,10 @@
     }
     const useHistCut = !!(histCut && histCut.length);
     const tgtContent = tgtMsg && typeof tgtMsg.content === "string" ? tgtMsg.content.trim() : "";
+    // 대상 메시지 끝부분 — 맨 끝 상기 문구에 다시 붙여, 요약·옛 기록보다 '지금 끝난 장면'을 마지막에 읽게 한다.
+    //   상태 블록(코드펜스) 이 붙은 인라인 답변이면 그 앞까지만 쓴다.
+    const tgtBody = tgtContent.split(/```us-status/i)[0].trim();
+    const tgtTail = tgtBody.length > 600 ? "…" + tgtBody.slice(-600) : tgtBody;
     // 채팅 히스토리를 끈 캡처는 대상 메시지 한 개만 보고 상태를 쓴다. 그러면
     //   · 대상 턴의 사용자 발화({{user}}의 행동)를 못 보고
     //   · 사이 턴에 기록이 없을 때 그 턴들에서 일어난 변화를 통째로 모른 채 몇 턴 전 값을 이어 쓴다.
@@ -4171,6 +4246,13 @@
       customCardBlocks.forEach((b) => blocks.push(b));
     }
     
+    // 프리셋에서 고른 섹션 — 대상 메시지를 읽기 전에 해석 기준을 먼저 둔다. 실패하면 없이 진행.
+    try {
+      const presetRef = await buildPresetRefBlock(st);
+      if (presetRef) blocks.push({ role: "system", content: presetRef });
+    } catch (e) {
+      console.warn("[UserStatus] 프리셋 섹션 읽기 실패, 없이 진행:", e && e.message);
+    }
     if (tgtContent) blocks.push({ role: "system", content: `[상태를 추출할 대상 메시지]\n${tgtContent}` });
     // 캐릭터 이름은 카드가 꺼져 있어도 항상 주입 (추출 대상 식별용)
     // 이 목록은 '이전에 출력됐던 이름'뿐 아니라 '캐릭터 카드에 배정된 이름'까지 합친 것 —
@@ -4195,6 +4277,9 @@
     const reminderText = "■ 상기: RP를 계속하지 마세요. 이 시점에서 오직 us-status 코드블록 하나만 출력하고 종료합니다."
       + " 블록 내용은 유효한 JSON만 허용 — 큰따옴표 키/값, 최상위 subjects/scene. YAML·평문 금지."
       + "\n■ 값은 대화 내용이 1순위, 이전 상태창 값은 출발점일 뿐입니다. 인물마다 대화 속 변화를 확인해 갱신하고, 근거가 없는 값만 유지하세요."
+      + "\n■ 값은 대상 메시지의 마지막 문장 시점 그대로입니다. 그 뒤에 일어날 일을 예측하거나 진행시키지 마세요. 직전 값이 본문 묘사와 어긋나면 직전 값을 버립니다."
+      + "\n■ 채팅 요약·옛 대화 기록에 적힌 상태는 지난 일입니다. 지금 상태는 대상 메시지로만 정합니다."
+      + (tgtTail ? `\n■ 대상 메시지는 이렇게 끝납니다 — 이 순간의 상태를 적으세요:\n${tgtTail}` : "")
       + (opts.extraPrompt ? `\n■ 추가 요청사항(반드시 반영): ${opts.extraPrompt}` : "");
     const reqBody = {
       chatId,
@@ -5248,6 +5333,15 @@
   .us-toggle>span{min-width:0;}
   .us-sw-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:6px;}
   .us-sw-item{display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;white-space:nowrap;}
+  .us-pref-list{display:flex;flex-direction:column;gap:2px;margin-top:6px;max-height:240px;overflow-y:auto;border:1px solid var(--border,#444);border-radius:7px;padding:4px;}
+  .us-pref-list:empty{display:none;}
+  .us-pref-item{display:flex;align-items:center;gap:8px;font-size:12px;padding:4px 6px;border-radius:5px;cursor:pointer;}
+  .us-pref-item input{flex:none;margin:0;}
+  .us-pref-item .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .us-pref-item .ct{flex:none;font-variant-numeric:tabular-nums;opacity:.7;}
+  .us-pref-item .chip{flex:none;font-size:10px;line-height:1.4;padding:0 6px;border-radius:999px;border:1px solid currentColor;opacity:.7;}
+  .us-pref-item.on{background:color-mix(in srgb,var(--us-box-primary,var(--primary,#6c8cff)) 14%,transparent);}
+  .us-pref-total{font-variant-numeric:tabular-nums;}
   .us-sw{position:relative;display:inline-block;width:34px;height:18px;flex:none;}
   .us-sw input{opacity:0;width:0;height:0;position:absolute;margin:0;}
   .us-sw .tr{position:absolute;inset:0;background:var(--muted-foreground,#999);border-radius:999px;transition:.18s;opacity:.45;}
@@ -5859,7 +5953,10 @@
   }
   function renderPastInlineWidget(host, chatId, msgId, swipe, entry, fallbackEntry) {
     const emptySwipe = !entry;
-    const status = statusForEntry(chatId, entry || fallbackEntry);
+    // '이전 메시지는 당시 디자인으로' ON → 그 기록에 찍힌 스킨, OFF → 지금 스킨으로 통일(값만 과거 것).
+    const status = config.ui.dynamicWindowCss
+      ? statusForEntry(chatId, entry || fallbackEntry)
+      : (statusForChat(chatId) || statusForEntry(chatId, entry || fallbackEntry));
     if (!status || (!emptySwipe && !entry.scene && !entry.subjects.length)) { host.remove(); return; }
     const key = `${chatId}:${msgId}:${swipe}`;
     const collapsed = inlinePastCollapsed[key] !== false;
@@ -6219,7 +6316,9 @@
     // 인라인에서는 현재 렌더 대상 기록에 찍힌 statusId를 먼저 사용한다. 재생성 직후에도
     // 해당 채팅/스와이프의 맞춤 CSS가 기본 스킨으로 잠깐 되돌아가지 않게 한다.
     const status = inlineMode
-      ? (displayedStatus(chatId) || statusForChat(chatId))
+      ? (config.ui.dynamicWindowCss
+        ? (displayedStatus(chatId) || statusForChat(chatId))
+        : (statusForChat(chatId) || displayedStatus(chatId)))
       : (usePastSkin ? displayedStatus(chatId) : (statusForChat(chatId) || displayedStatus(chatId)));
     const title = status ? (chatId ? (config.perChatTitle[chatId] || chatNameCache[chatId] || status.name) : status.name) : "유저 상태창";
     const subjects = st.enabled ? currentSubjects(chatId) : null;
@@ -7132,6 +7231,80 @@
     selectTab(config.ui.panelTab || "status");
   }
 
+  // 설정 창 '프리셋 섹션' — 프리셋 고르기 + 섹션 체크. 열 때마다 서버에서 새로 읽는다.
+  function wirePresetRef(root, curSet) {
+    const sel = root.querySelector("#us-pref-preset");
+    const list = root.querySelector("#us-pref-list");
+    const total = root.querySelector("#us-pref-total");
+    if (!sel || !list || !total) return;
+    const fmt = (n) => n.toLocaleString("ko-KR") + "자";
+    let secs = [];
+    const paintTotal = () => {
+      const ids = new Set(curSet().presetRefSections || []);
+      const n = secs.filter((x) => ids.has(x.id)).reduce((a, x) => a + presetSectionText(x).length, 0);
+      total.textContent = n ? `합계 ${fmt(n)}` : "";
+    };
+    const paintList = async (fresh) => {
+      const s = curSet();
+      const pid = s.presetRefId;
+      list.innerHTML = ""; total.textContent = ""; secs = [];
+      if (!pid) return;
+      let full;
+      try { full = await fetchPresetFull(pid, fresh); }
+      catch (e) {
+        if (curSet().presetRefId === pid) list.innerHTML = `<div class="us-note" style="margin:4px 6px;">프리셋을 읽지 못했습니다: ${esc((e && e.message) || "")}</div>`;
+        return;
+      }
+      if (!list.isConnected || curSet().presetRefId !== pid) return; // 그새 창이 닫혔거나 다른 프리셋을 골랐다
+      secs = orderedPresetSections(full);
+      const vars = presetChoiceVars(full);
+      // 프리셋에서 지워진 섹션 ID는 정리한다 (읽기에 성공했을 때만)
+      const have = new Set(secs.map((x) => x.id));
+      const before = Array.isArray(s.presetRefSections) ? s.presetRefSections : [];
+      const kept = before.filter((id) => have.has(id));
+      if (kept.length !== before.length) { s.presetRefSections = kept; saveConfig(); }
+      const on = new Set(kept);
+      list.innerHTML = secs.map((x) => {
+        const txt = presetSectionText(x);
+        const usesVar = vars.some((v) => txt.indexOf(`{{${v}}}`) >= 0);
+        const chk = on.has(x.id);
+        return `<label class="us-pref-item${chk ? " on" : ""}">`
+          + `<input type="checkbox" data-id="${escAttr(x.id)}"${chk ? " checked" : ""}/>`
+          + `<span class="nm" title="${escAttr(x.name || "")}">${esc(x.name || "(이름 없음)")}</span>`
+          + (usesVar ? `<span class="chip" title="프리셋 선택지 값이 들어가는 섹션입니다. 상태창 요청에서는 그 값이 채워지지 않습니다.">선택지</span>` : "")
+          + `<span class="ct">${fmt(txt.length)}</span></label>`;
+      }).join("") || `<div class="us-note" style="margin:4px 6px;">내용이 있는 섹션이 없습니다.</div>`;
+      list.querySelectorAll("input[data-id]").forEach((cb) => { cb.onchange = () => {
+        const cur = curSet();
+        const set = new Set(cur.presetRefSections || []);
+        if (cb.checked) set.add(cb.dataset.id); else set.delete(cb.dataset.id);
+        cur.presetRefSections = secs.map((x) => x.id).filter((id) => set.has(id));
+        cb.closest(".us-pref-item").classList.toggle("on", cb.checked);
+        saveConfig(); paintTotal();
+      }; });
+      paintTotal();
+    };
+    sel.onchange = () => {
+      const s = curSet();
+      s.presetRefId = sel.value || null;
+      s.presetRefSections = [];
+      saveConfig(); paintList(true);
+    };
+    (async () => {
+      let arr = null;
+      try { const r = await marinara.apiFetch("/prompts"); arr = Array.isArray(r) ? r : []; } catch (_) { arr = null; }
+      if (!sel.isConnected) return;
+      const curId = curSet().presetRefId;
+      let opts = `<option value="">(안 씀)</option>` + (arr || []).map((p) =>
+        `<option value="${escAttr(p.id)}"${p.id === curId ? " selected" : ""}>${esc(p.name || p.id)}</option>`).join("");
+      if (curId && !(arr || []).some((p) => p.id === curId)) {
+        opts += `<option value="${escAttr(curId)}" selected>${arr ? "(없는 프리셋)" : "(목록을 못 읽음)"}</option>`;
+      }
+      sel.innerHTML = opts;
+      paintList(true);
+    })();
+  }
+
   function renderStatusTab(root) {
     const chatId = getChatId();
     ensureChatValues(chatId);
@@ -7202,6 +7375,14 @@
           <input type="number" min="0" max="200" class="us-input us-num" id="us-hist-turns" value="${st.historyTurns}"/>
           <span class="us-note" style="margin:0;">개 답변 (0 = 전체)</span>
         </div>
+        <div id="us-pref-wrap">
+          <div class="us-row" style="margin-top:8px;align-items:center;gap:8px;" title="API 따로 연결일 때만 씁니다. 고른 섹션만 상태값 생성 요청에 붙고, 프리셋의 켜짐/꺼짐이나 본 채팅에는 영향이 없습니다. 프리셋을 고치면 다음 생성부터 고친 내용이 들어갑니다.">
+            <span class="us-note" style="margin:0;flex:none;">프리셋 섹션:</span>
+            <select class="us-sel" id="us-pref-preset" style="flex:1;min-width:0;max-width:280px;"><option value="">(안 씀)</option></select>
+            <span class="us-note us-pref-total" id="us-pref-total" style="margin:0;flex:none;"></span>
+          </div>
+          <div class="us-pref-list" id="us-pref-list"></div>
+        </div>
         <label class="us-toggle" style="margin-top:8px;display:flex;" title="눈 아이콘으로 숨긴 캐릭터를 상태 생성 프롬프트에서도 제외합니다 (필수 인물 목록 + 캐릭터 카드). 저장된 값은 유지됩니다.">
           <input type="checkbox" id="us-hidden-exclude" ${st.hiddenExcludeFromPrompt ? "checked" : ""}/> 숨긴 캐릭터는 프롬프트에서도 제외 (인물 목록·캐릭터 카드)
         </label>
@@ -7265,12 +7446,15 @@
     root.querySelectorAll('input[name="us-mode"]').forEach((r) => r.onchange = (e) => {
       curSet().dataMode = e.target.value; saveConfig();
       $("#us-conn-wrap").style.opacity = e.target.value === "api" ? "1" : ".45";
+      $("#us-pref-wrap").style.opacity = e.target.value === "api" ? "1" : ".45";
       if (e.target.value === "api") hideRawBlocksInChat();
       // 모드에 따라 '출력 결과' 탭을 즉시 추가/제거. 보관 중인 미인식 원문 슬롯은 건드리지 않으므로,
       // api→inline→api 로 오가도 같은 실패 원문이 그대로 다시 보인다.
       rebuildPanelTabBar();
     });
     $("#us-conn-wrap").style.opacity = st.dataMode === "api" ? "1" : ".45";
+    $("#us-pref-wrap").style.opacity = st.dataMode === "api" ? "1" : ".45";
+    wirePresetRef(root, curSet);
     $("#us-injectvals").onchange = (e) => { curSet().injectCurrentValues = e.target.checked; saveConfig(); };
     $("#us-inc-history").onchange = (e) => { curSet().incHistory = e.target.checked; saveConfig(); };
     $("#us-hist-turns").onchange = (e) => {
@@ -8066,12 +8250,15 @@
           <span>설정창·편집기 창도 윈도우 CSS 따라가기 <span style="font-size:11px;opacity:.7;">(끄면 항상 마리나라 테마)</span></span>
         </label>
         <div class="us-note">켜면 설정창·편집기 창 색이 플로팅 창(#us-float) 색을 그대로 따라갑니다(프리셋 포함). 끄면 항상 마리나라 기본 테마로 표시됩니다.</div>
+        <label class="us-toggle" style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+          <label class="us-switch"><input type="checkbox" id="us-dynamic-window-css" ${config.ui.dynamicWindowCss ? "checked" : ""}/><span class="us-track"></span></label>
+          <span>이전 메시지는 당시 상태창 디자인으로 표시</span>
+        </label>
+        <div class="us-note">끄면 이전 메시지도 지금 상태창 디자인으로 표시. 화면에 띄우기 모드는 과거 메시지를 볼 때, 채팅창 안 모드는 메시지마다 붙은 상태창에 적용.</div>
       </div>
       ${foldSec("floatHistory", "floating", "기록 표시", `
         <label class="us-toggle" style="display:flex;${inlineOn ? "opacity:.55;" : ""}"><input type="checkbox" id="us-history-hover" ${config.ui.historyHoverPreview !== false ? "checked" : ""} ${inlineOn ? "disabled" : ""}/> <span>마우스/스크롤로 과거 메시지에 포커스될 때 상태창을 과거 기록으로 전환</span></label>
         <div class="us-note">화면에 띄우기 모드에서만 적용됩니다. 채팅창 안 모드는 각 메시지 아래에서 그 메시지·스와이프의 기록을 직접 표시합니다.</div>
-        <label class="us-toggle" style="display:flex;margin-top:8px;${inlineOn ? "opacity:.55;" : ""}"><input type="checkbox" id="us-dynamic-window-css" ${config.ui.dynamicWindowCss ? "checked" : ""} ${inlineOn ? "disabled" : ""}/> <span>플로팅 창이 이전 메시지의 상태창 디자인도 따라가기</span></label>
-        <div class="us-note">화면에 띄우기 모드에서만 적용됩니다. 채팅창 안 모드는 과거 위젯마다 저장 당시 스킨과 CSS를 직접 사용합니다.</div>
       `)}
       ${foldSec("floatCharFold", "floating", "캐릭터 영역 접기", `
         <label class="us-toggle" style="display:flex;gap:8px;align-items:center;${inlineOn ? "opacity:.65;" : ""}">
@@ -8171,6 +8358,7 @@
       saveConfig();
       if (!e.target.checked) { historyWindowCssOverride = null; }
       applyWindowCss();
+      invalidateFloat();
     };
     $("#us-icon-minimize").onchange = (e) => { config.ui.floatMinimizeMode = e.target.checked ? "icon" : "bar"; saveConfig(); invalidateFloat(); };
     $("#us-char-collapse").onchange = (e) => { config.ui.charCollapseEnabled = e.target.checked; saveConfig(); invalidateFloat(); };
@@ -10288,5 +10476,5 @@
       document.documentElement.classList.remove("us-custom-css-active");
     } catch (e) {}
   });
-  console.log(`[User Status] v2.1.0 loaded (${runtime.mode})`);
+  console.log(`[User Status] v2.1.3 loaded (${runtime.mode})`);
 })(marinara);

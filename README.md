@@ -8,20 +8,21 @@ AI 답변이 끝날 때마다 등장인물마다 기분 · 호감도 · HP 같�
 상태창의 모양과 칸은 스킨으로 바꿀 수 있고, 메시지 · 스와이프마다 기록이 남아 지난 턴의 상태도 다시 볼 수 있어요.
 지금 상태는 다음 답변을 만들 때 AI에게 같이 보내서, 이야기가 앞뒤로 이어지게 해요.
 
+2.1.3에서 바뀐 것:
+
+- **설정 → 상태창 설정 → 프리셋 섹션**: 마리나라 프리셋에서 체크한 섹션만 상태창을 만들 때 같이 보내요. 프리셋을 고치면 그대로 따라가요.
+- **고급 → 이전 메시지는 당시 상태창 디자인으로 표시**: 채팅창 안 모드에서도 켜고 끌 수 있어요. 끄면 옛 메시지 상태창도 지금 스킨으로 보여요.
+- 첫 상태창이 채팅 요약이나 옛 기록의 상태를 지금 상태로 가져오던 것을 고쳤어요.
+- 기본 다크 골드 판타지를 다듬었어요. 기존 기본 디자인은 새로고침하면 갱신되고, 직접 수정한 디자인은 그대로 둬요.
+
 ## 설치
 
-1. 엔진 쪽 준비 (처음 한 번만)
-   - 서버 `.env`에 `ENABLE_EXTERNAL_EXTENSIONS=true`를 넣고 서버를 다시 켜요.
-   - Settings → Advanced → Danger Zone에서 **Allow third-party extension imports**를 켜요.
-2. 아래 셋 중 편한 방법으로 가져와요.
-   - **json 파일 하나로**: `user-status.json`을 받아 Settings → Addons → External Extensions에서 가져와요.
-   - **GitHub 저장소 연결로**: GitHub 저장소에서 확장을 받는 관리 도구를 쓰면 이 저장소 주소를 넣어요. `manifest.json`을 찾아 설치해요.
-   - **ZIP으로**: Code → Download ZIP으로 받아 **Import Extension File**로 가져와요. 압축을 풀었다면 **Import Extension Folder**로 폴더를 골라도 돼요.
-3. 검토 화면에서 **Full page access**를 확인하고 승인해요.
-4. 페이지를 새로고침해요.
+1. **Settings → Advanced** 맨 아래 **Danger Zone**에서 **Allow third-party extension imports**를 켜요. (처음 한 번만)
+   - 스위치가 잠겨 있으면 서버 `.env`에 `ENABLE_EXTERNAL_EXTENSIONS=true`를 넣고 서버를 다시 켠 뒤 켜요.
+2. `user-status.json`을 받아 **Settings → Addons → External Extensions → Import Extension File**로 가져와요.
+3. 검토 화면에서 **Full page access**를 확인하고 승인한 뒤, 페이지를 새로고침해요.
 
-> `user-status.js`만 따로 가져오면 엔진이 샌드박스 확장으로 등록해서 상태창이 뜨지 않아요.
-> json 파일, 저장소 연결, 폴더(ZIP)째 가져오기 중 하나로 가져오세요.
+> `user-status.js`를 가져오면 상태창이 뜨지 않아요. 꼭 `user-status.json`을 가져오세요.
 
 **예전 판에서 올릴 때**
 
@@ -35,7 +36,8 @@ AI 답변이 끝날 때마다 등장인물마다 기분 · 호감도 · HP 같�
 - **상태창 설정** 탭에서 스킨을 고르거나 새로 만들어요.
   - 기본 스킨 5가지가 들어 있어요. 스킨 이름을 누르면 어떤 칸이 나오는지 설명이 펼쳐져요.
   - 스킨은 목록의 **추출**로 파일로 내보내고, **상태창 가져오기**로 불러와요(여러 파일을 한꺼번에 고를 수 있어요).
-  - `skin` 폴더에 추가 스킨 7가지가 있어요. 받아서 **상태창 가져오기**로 불러와요.
+  - `skin` 폴더에 추가 스킨 8가지가 있어요. 받아서 **상태창 가져오기**로 불러와요.
+  - 스킨을 직접 만들거나 AI에게 만들어 달라고 할 때는 [USER_STATUS_GUIDE.md](USER_STATUS_GUIDE.md)를 보세요.
 - 데이터 방식은 둘 중 하나예요.
   - **API 따로 연결(권장)**: 답변과 따로 AI를 한 번 더 불러 값만 받아요. 채팅 본문이 깔끔해요.
   - **채팅 출력**: AI 답변에 값 블록을 같이 쓰게 해서 읽어요.
@@ -70,10 +72,10 @@ AI 답변이 끝날 때마다 등장인물마다 기분 · 호감도 · HP 같�
 
 ## 확인한 엔진 버전
 
-- v2.5.1 — 이 판(2.1.0)의 가져오기 형식(`manifest.json`의 `full_page_access` · `jsPath`)을 엔진 소스에서 확인
+- v2.5.2 (`fc0333c`) — 이 판(2.1.3)의 가져오기 형식(`manifest.json`의 `full_page_access` · `jsPath`)을 엔진 소스에서 확인
 
 ## 라이선스
 
 [AGPL-3.0](LICENSE)
 
-고쳐서 쓰거나 다시 배포할 때는 원본으로 이 저장소(`marinara-user-status`)를 밝혀 주세요.
+고쳐서 쓰거나 다시 배포할 때는 원본으로 이 저장소(`user_Status`)를 밝혀 주세요.
